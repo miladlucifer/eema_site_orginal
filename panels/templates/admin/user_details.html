@@ -1,0 +1,78 @@
+{% extends '_base.html' %}
+{% block content %}
+    <h1>جزئیات کاربر: {{ user.username }}</h1>
+
+    <h2>مشتریان مرتبط</h2>
+    <ul id="customers-list"></ul>
+
+    <h2>نظرات مرتبط</h2>
+    <ul id="comments-list"></ul>
+
+    <h2>سفارشات مرتبط</h>
+    <ul id="orders-list"></ul>
+
+    <a href="{% url 'delete_user_confirm' user.id %}" class="btn btn-danger">حذف کاربر</a>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        console.log("Document loaded");
+
+        const userId = {{ user.id }};
+        console.log(`User ID: ${userId}`);
+
+        fetch(`/panels/api/user/${userId}/details/`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                console.log("API response received");
+                return response.json();
+            })
+            .then(data => {
+                console.log("Data received:", data);
+
+                const customersList = document.getElementById('customers-list');
+                const commentsList = document.getElementById('comments-list');
+                const ordersList = document.getElementById('orders-list');
+
+                // بررسی و نمایش اطلاعات مشتریان
+                if (data.customers && data.customers.length > 0) {
+                    data.customers.forEach(customer => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `ID: ${customer.id} | تلفن: ${customer.phone_number} | تاریخ تولد: ${customer.birth_date}`;
+                        customersList.appendChild(listItem);
+                    });
+                } else {
+                    customersList.innerHTML = '<li>هیچ مشتری مرتبطی یافت نشد.</li>';
+                }
+
+                // بررسی و نمایش اطلاعات نظرات
+                if (data.comments && data.comments.length > 0) {
+                    data.comments.forEach(comment => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `ID: ${comment.id} | نویسنده: ${comment.author} | نظر: ${comment.body}`;
+                        commentsList.appendChild(listItem);
+                    });
+                } else {
+                    commentsList.innerHTML = '<li>هیچ نظری مرتبط یافت نشد.</li>';
+                }
+
+                // بررسی و نمایش اطلاعات سفارشات
+                if (data.orders && data.orders.length > 0) {
+                    data.orders.forEach(order => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `ID: ${order.id} | وضعیت: ${order.status}`;
+                        ordersList.appendChild(listItem);
+                    });
+                } else {
+                    ordersList.innerHTML = '<li>هیچ سفارشی مرتبط یافت نشد.</li>';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching user details:', error);
+            });
+    });
+</script>
+{% endblock %}

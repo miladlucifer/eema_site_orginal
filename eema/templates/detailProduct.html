@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ali page</title>
+</head>
+<body>
+
+
+    
+<div class="container">
+    
+    <h1> Name: {{ product_detail.name }}</h1>
+	<p> Category: {{ product_detail.category }}</p><br>
+	<p> Description: {{ product_detail.description }}</p><br>
+	<p> Price: {{ product_detail.unit_price }}</p><br>
+	<p> Inventory: {{ product_detail.inventory }}</p><br>
+	<p> Slug: {{ product_detail.slug }}</p><br>
+    <form method="get" action="{% url 'product-list' %}">
+        <button class="btn btn-info" type="submit">Back</button>
+    </form>
+    
+</div>
+
+
+
+</body>
+</html>

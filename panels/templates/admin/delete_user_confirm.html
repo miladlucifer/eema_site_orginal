@@ -1,0 +1,10 @@
+<!-- templates/delete_user_confirm.html -->
+{% extends '_base.html' %}
+{% block content %}
+    <h1>آیا مطمئن هستید که می‌خواهید کاربر {{ user.username }} را حذف کنید؟</h1>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">بله، حذف کن</button>
+        <a href="{% url 'user_details' user.id %}" class="btn btn-secondary">لغو</a>
+    </form>
+{% endblock %}

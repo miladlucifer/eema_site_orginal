@@ -1,0 +1,43 @@
+{% extends '_base.html' %}
+{% load static %}
+{% block page_title %}{{ post.title }}{% endblock page_title %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/css_blog.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="blog-container p-4">
+                <h1 class="mb-4 text-center blog-title">{{ post.title }}</h1>
+                <div class="blog-content">
+                    <p class="text-muted">نویسنده: {{ post.author.get_full_name }} - تاریخ: {{ post.datetime_created|date:"Y/m/d" }}</p>
+                    <p>{{ post.body }}</p>
+                </div>
+                <div id="comments-container" data-blog-slug="{{ post.slug }}" class="comments-section mt-5">
+                    <h3>کامنت‌ها</h3>
+                    <!-- کامنت‌ها به اینجا اضافه می‌شوند -->
+                </div>
+                <div id="alert-container"></div>  <!-- محل نمایش پیام بوت استرپ -->
+                <div class="add-comment mt-5">
+                    <h3>اضافه کردن کامنت</h3>
+                    {% if user.is_authenticated %}
+                        <form id="comment-form" data-blog-slug="{{ post.slug }}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="comment-body">متن کامنت</label>
+                                <textarea class="form-control" id="comment-body" name="body" rows="3" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">ارسال کامنت</button>
+                        </form>
+                    {% else %}
+                        <p>برای ارسال نظر خود باید <a href="{% url 'login_signup' %}">ورود</a> یا <a href="{% url 'login_signup' %}">ثبت‌نام</a> کنید.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,71 @@
+{% extends '_base.html' %}
+{% load i18n %}
+{% load permissions_filters %}
+
+{% block page_title %}PRODUCTS{% endblock %}
+
+{% block content %}
+
+
+
+    <div class="container mt-5">
+    <!-- فرم جستجو و فیلتر -->
+    <form method="get" action="" class="form-inline mb-4">
+        <input type="text" name="search" class="form-control mr-2" placeholder="Search by name"
+               value="{{ request.GET.search }}">
+        <select name="category" class="form-control mr-2">
+            <option value="">All Categories</option>
+            {% for category in categories %}
+                <option value="{{ category.id }}"
+                        {% if request.GET.category == category.id|stringformat:"s" %}selected{% endif %}>{{ category.title }}</option> {% endfor %}
+        </select> <select name="ordering" class="form-control mr-2">
+        <option value="name" {% if request.GET.ordering == "name" %}selected{% endif %}>Order by name</option>
+        <option value="unit_price" {% if request.GET.ordering == "unit_price" %}selected{% endif %}>Order by price
+        </option>
+    </select>
+        <button type="submit" class="btn btn-primary">{% translate 'Filter' %}</button>
+    </form>
+    <!-- لیست محصولات -->
+    <ul class="list-group"> {% for product in serializer_product %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <p style="color: lightslategrey">Name Product:</p>
+            <a href="{% url 'product-detail' product.id %}">
+                {{ product.name }}
+            </a>
+            <p style="color: lightslategrey">Price:</p>{{ product.unit_price }}
+            <p style="color: lightslategrey">Category: </p>{{ product.category }}
+            <form method="post" action="{% url 'product-destroy' product.id %}" class="ml-2"> {% csrf_token %}
+                {% if user|has_permissions:"eema.delete_product" %}
+                    <button type="submit" class="btn btn-danger admin-delete-button">{% translate 'Delete' %}</button>
+                {% endif %}
+            </form>
+        </li> {% endfor %}
+    </ul>
+
+    <p>{{ page }}</p>
+
+
+    <!-- صفحه‌بندی -->
+
+    <div class="pagination">
+        {% if page.has_previous %}
+            <a href="?page={{ page.previous_page_number }}">{% translate 'previous' %}</a>
+        {% endif %}
+        {% for num in page.paginator.page_range %}
+            {% if num == 1 or num == page.number or num == page.paginator.num_pages or num >= page.number|add:"-2" and num <= page.number|add:"2" %}
+                {% if page.number == num %}
+                    <span class="active">{{ num }}</span>
+                {% else %}
+                    <a href="?page={{ num }}">{{ num }}</a>
+                {% endif %}
+            {% elif num == page.number|add:"-3" or num == page.number|add:"3" %}
+                <span class="dots">...</span>
+            {% endif %}
+        {% endfor %}
+        {% if page.has_next %}
+            <a href="?page={{ page.next_page_number }}">{% translate 'next' %}</a>
+        {% endif %}
+    </div>
+    </div>
+
+{% endblock %}

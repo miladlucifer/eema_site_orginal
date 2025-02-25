@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ERROR</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<h1>error delete product</h1>
+<br>
+<div>
+
+    <form method="get" action="">
+
+        {% if error_exist_order_Item %}
+            <div class="alert alert-danger" role="alert">
+                <p>{{ error_exist_order_Item }}</p>
+            </div>
+            <button type="submit" formaction="{% url 'product-list' %}">Back</button>
+        {% endif %}
+    </form>
+
+</div>
+
+
+</body>
+</html>
