@@ -5,7 +5,6 @@ import re
 from django.shortcuts import render, get_object_or_404, redirect
 from django_filters.rest_framework import DjangoFilterBackend
 from django.utils.text import slugify
-from docs.conf import author
 from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from rest_framework import status
