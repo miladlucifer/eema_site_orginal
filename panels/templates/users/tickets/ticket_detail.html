@@ -1,0 +1,58 @@
+{% extends '_base.html' %}
+{% block content %}
+{% load custom_filters %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0">تیکت #{{ ticket.id }} - {{ ticket.subject }}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="ticket-details mb-4">
+                        <p class="text-muted">ارسال شده توسط: {{ ticket.user.username }}</p>
+                        <p class="text-muted">تاریخ ایجاد: {{ ticket.created_at|date:"Y/m/d H:i" }}</p>
+                        <p class="text-muted">وضعیت:
+<span class="badge badge-{{ ticket.status|is_open|yesno:'success,secondary' }}">
+    {{ ticket.get_status_display }}
+</span>
+                        </p>
+                        <hr>
+                        <p>{{ ticket.message }}</p>
+                    </div>
+
+                    <h4 class="mb-3">پاسخ‌ها</h4>
+                    {% for response in responses %}
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <p class="text-muted">ارسال شده توسط: {{ response.user.username }}</p>
+                                <p class="text-muted">تاریخ پاسخ: {{ response.created_at|date:"Y/m/d H:i" }}</p>
+                                <hr>
+                                <p>{{ response.message }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    {% if is_closed %}
+                        <div class="alert alert-warning" role="alert">
+                            این تیکت بسته شده است و نمی‌توانید پیام جدیدی ارسال کنید.
+                        </div>
+                    {% else %}
+                        <hr>
+                        <h4 class="mb-3">ارسال پاسخ</h4>
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <textarea name="message" class="form-control" rows="5" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-paper-plane"></i> ارسال پاسخ
+                            </button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

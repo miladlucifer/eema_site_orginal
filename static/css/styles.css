@@ -1,0 +1,947 @@
+.sticky-card {
+    position: -webkit-sticky; /* برای مرورگرهای قدیمی */
+    position: sticky;
+    top: 120px; /* فاصله از بالای صفحه (باید بیشتر از ارتفاع هدر باشد) */
+    z-index: 10; /* مقدار z-index باید کمتر از هدر باشد */
+}
+
+.img-car-detail-course {
+    width: 100%;
+    height: 600px;
+}
+
+.card-header.bg-primary {
+    background-color: #007bff !important;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+
+.list-group-item {
+    transition: background-color 0.3s ease;
+
+}
+
+.list-group-item:hover {
+    background-color: #e9ecef;
+    transform: translateX(5px);
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 123, 255, 0.05);
+}
+
+.table-striped tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+/* بهبود ظاهر کارت‌ها */
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* بهبود ظاهر دکمه‌ها */
+.btn-lg {
+    font-size: 1.2rem;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+
+/* بهبود ظاهر نمودارها */
+canvas {
+    max-width: 100%;
+    height: auto !important;
+}
+
+/* بهبود ظاهر جدول */
+.table-responsive {
+    overflow-x: auto;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.table-striped tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    border-radius: 10px 10px 0 0;
+}
+
+.badge-success {
+    background-color: #28a745;
+}
+
+.badge-secondary {
+    background-color: #6c757d;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.btn-block {
+    width: 100%;
+}
+
+.shadow {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* فوتر */
+.footer {
+    background-color: #333;
+    color: #fff;
+    padding: 40px 0;
+    margin-top: 50px;
+}
+
+.footer-inner {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.footer-section {
+    margin-bottom: 20px;
+}
+
+.footer-title {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #fff;
+}
+
+.footer-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-list li {
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.footer-list a {
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-list a:hover {
+    color: #007bff;
+}
+
+.social-links {
+    display: flex;
+    gap: 10px;
+}
+
+.social-link {
+    color: #fff;
+    font-size: 20px;
+    transition: color 0.3s;
+}
+
+.social-link:hover {
+    color: #007bff;
+}
+
+.footer-bottom {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #444;
+}
+
+.copyright {
+    font-size: 14px;
+    margin: 0;
+}
+
+
+.header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100; /* مقدار z-index بیشتر از کارت ثبت نام */
+    background-color: white; /* برای جلوگیری از نمایش محتوا زیر هدر */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* سایه برای جداسازی هدر از محتوا */
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.header-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo img {
+    height: 50px;
+}
+
+.navbar .nav-list {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item {
+    margin-left: 20px;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #333;
+    font-size: 16px;
+    transition: color 0.3s;
+}
+
+.nav-link:hover {
+    color: #007bff;
+}
+
+.user-section {
+    display: flex;
+    align-items: center;
+}
+
+.user-dropdown {
+    position: relative;
+}
+
+.user-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #333;
+    display: flex;
+    align-items: center;
+}
+
+.user-btn i {
+    margin-left: 5px;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    padding: 10px;
+    right: 0;
+    min-width: 150px;
+    z-index: 1;
+}
+
+.dropdown-content a {
+    display: block;
+    padding: 8px 0;
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+    transition: color 0.3s;
+}
+
+.dropdown-content a:hover {
+    color: #007bff;
+}
+
+.user-dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.login-btn {
+    text-decoration: none;
+    color: #333;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+}
+
+.login-btn i {
+    margin-left: 5px;
+}
+
+/* فرم جستجو */
+.search-box {
+    flex: 1;
+    margin: 0 20px;
+    max-width: 500px;
+}
+
+.search-form {
+    display: flex;
+    align-items: center;
+    background-color: #f1f1f1;
+    border-radius: 25px;
+    padding: 5px 10px;
+}
+
+.search-input {
+    flex: 1;
+    border: none;
+    background: none;
+    outline: none;
+    font-size: 16px;
+    padding: 5px 10px;
+    color: #333;
+}
+
+.search-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #333;
+    font-size: 18px;
+    padding: 5px;
+    transition: color 0.3s;
+}
+
+.search-btn:hover {
+    color: #007bff;
+}
+
+
+.navbar-brand img {
+    height: 50px;
+}
+
+.navbar-nav .nav-link {
+    font-size: 16px;
+    color: #333;
+    margin-left: 15px;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #007bff;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+/* بخش معرفی */
+.hero-section {
+    background: url(static/img/hero-bg.jpg) no-repeat center center/cover;
+    padding: 100px 0;
+    color: #fff;
+}
+
+.hero-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.hero-text {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+
+/* خدمات */
+.services-section {
+    padding: 80px 0;
+}
+
+.service-card {
+    text-align: center;
+    padding: 20px;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.service-icon {
+    font-size: 3rem;
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+.service-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.service-text {
+    font-size: 1rem;
+    color: #666;
+}
+
+/* نمونه کارها */
+.portfolio-section {
+    padding: 80px 0;
+}
+
+.portfolio-card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.portfolio-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.portfolio-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.portfolio-text {
+    font-size: 1rem;
+    color: #666;
+}
+
+/* درباره ما */
+.about-section {
+    padding: 80px 0;
+}
+
+.about-text {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.about-list {
+    list-style: none;
+    padding: 0;
+}
+
+.about-list li {
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+.about-list i {
+    color: #007bff;
+    margin-left: 10px;
+}
+
+/* نظرات مشتریان */
+.testimonials-section {
+    padding: 80px 0;
+}
+
+.testimonial-card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.testimonial-text {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.testimonial-author {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #007bff;
+}
+
+/* وبلاگ */
+.blog-section {
+    padding: 80px 0;
+}
+
+.blog-card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.blog-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.blog-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.blog-text {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* تماس با ما */
+.contact-section {
+    padding: 80px 0;
+}
+
+.contact-form .form-control {
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+.contact-info {
+    font-size: 1rem;
+    color: #666;
+}
+
+.contact-info i {
+    color: #007bff;
+    margin-left: 10px;
+}
+
+/* استایل‌های اسلایدشو */
+.slider {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    margin-top: 30px;
+}
+
+.slides {
+    position: relative;
+    width: 100%;
+    height: 500px; /* ارتفاع اسلایدشو */
+}
+
+.slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transform: translateX(100%); /* اسلاید از سمت راست وارد می‌شود */
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+
+.slide.active {
+    opacity: 1;
+    transform: translateX(0); /* اسلاید در جای خود قرار می‌گیرد */
+}
+
+.slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* تصویر را به اندازه اسلاید تنظیم می‌کند */
+}
+
+.slide-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #fff;
+    background: rgb(255 255 255 / 89%);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.slide-content h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.slide-content p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+.slide-content .btn {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.slide-content .btn:hover {
+    background-color: #0056b3;
+}
+
+/* دکمه‌های کنترل */
+.slider-control {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 1.5rem;
+    transition: background 0.3s;
+}
+
+.slider-control:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.prev {
+    left: 10px;
+}
+
+.next {
+    right: 10px;
+}
+
+/* نقاط نشان‌دهنده اسلایدها */
+.slider-dots {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.dot.active {
+    background: #fff;
+}
+
+/* استایل کلی پنل */
+.post-details-panel {
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+.panel-title {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* استایل بخش‌ها */
+.section {
+    margin-bottom: 20px;
+}
+
+.section h4 {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.no-data {
+    color: #888;
+    font-style: italic;
+}
+
+/* استایل کلی فرم */
+#comment-form {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#comment-form .form-control {
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    transition: border-color 0.3s ease;
+    font-size: 14px;
+}
+
+#comment-form .form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 5px rgba(128, 189, 255, 0.5);
+}
+
+#comment-form .btn-primary {
+    background-color: #007bff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+#comment-form .btn-primary:hover {
+    background-color: #0056b3;
+}
+
+/* استایل بخش کامنت‌ها */
+.comments-section {
+    margin-top: 30px;
+}
+
+.comment-list {
+    margin-top: 20px;
+}
+
+.comment-header {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.comment-avatar {
+    width: 40px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.comment-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.comment-author {
+    font-weight: lighter;
+    color: #333;
+    margin-right: 10px;
+}
+
+.comment-date {
+    color: #777;
+    font-size: 0.9em;
+    padding-right: 15px;
+    padding-top: 5px;
+}
+
+.comment-body {
+    color: #555;
+    line-height: 1.6;
+}
+
+.comment-actions {
+    margin-top: 10px;
+}
+
+.comment-actions button {
+    margin-right: 10px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #007bff;
+    transition: color 0.3s ease;
+}
+
+.comment-actions button:hover {
+    color: #0056b3;
+}
+
+.comment {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    overflow: hidden;
+    background: repeating-linear-gradient(44deg, #ffffff38, #7f7f7f08 100px);
+}
+
+
+.comment-header {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.comment-body {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.comment-actions {
+    margin-top: 10px;
+}
+
+.comment-actions button {
+    margin-right: 10px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    background-color: transparent;
+    color: #007bff;
+    font-size: 16px;
+}
+
+.comment-actions button:hover {
+    background-color: #f0f0f0;
+}
+
+.like-btn {
+    color: #28a745; /* سبز */
+}
+
+.dislike-btn {
+    color: #dc3545; /* قرمز */
+}
+
+.replies {
+    margin-left: 30px;
+    margin-top: 10px;
+    overflow: auto;
+    transition: max-height 0.3s ease-out;
+    max-height: 0;
+    padding-left: 10px;
+}
+
+.replies.show {
+    max-height: 5000px; /* مقدار مناسب برای نمایش کامل ریپلای‌ها */
+}
+
+.reply-btn {
+    background-color: #007bff; /* آبی */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.reply-btn:hover {
+    background-color: #0056b3; /* آبی تیره */
+}
+
+.toggle-replies-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.toggle-replies-btn:hover {
+    background-color: #0056b3;
+}
+
+.reply-form {
+    margin-top: 10px;
+}
+
+.reply-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.reply-form button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    background-color: #28a745;
+    color: white;
+}
+
+.reply-form button:hover {
+    background-color: #218838;
+}
+
+/* استایل لیست‌ها */
+.category-list, .comment-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.category-item, .comment-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.category-title, .comment-body {
+    font-size: 16px;
+    color: #333;
+    margin: 0;
+    padding: 30px;
+    border: 1px ridge;
+    background: linear-gradient(286deg, #00000005, transparent);
+    border-radius: 10px;
+}
+
+/* استایل دکمه‌ها */
+.btn-remove, .btn-close {
+    background-color: #ff4d4d;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-remove:hover, .btn-close:hover {
+    background-color: #e60000;
+}
+
+.btn-close {
+    background-color: #666;
+    margin-top: 20px;
+    width: 23px;
+}
+
+.btn-close:hover {
+    background-color: #555;
+}

@@ -1,9 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from django.views.generic import TemplateView
 from django.contrib.auth import login, authenticate,logout
 from django.contrib import messages
 from .forms import CustomLoginForm, CustomSignupForm
-from core.models import CustomUser
 
 
 class LoginSignupView(TemplateView):

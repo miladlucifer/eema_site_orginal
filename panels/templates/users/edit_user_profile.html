@@ -1,0 +1,54 @@
+{% extends '_base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg">
+                <!-- هدر کارت -->
+                <div class="card-header bg-primary text-white text-center py-4">
+                    <h3 class="card-title mb-0 color--white">ویرایش پروفایل</h3>
+                </div>
+                <!-- بدنه کارت -->
+                <div class="card-body p-4">
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        <!-- فیلد نام کاربری -->
+                        <div class="form-group mb-3">
+                            <label for="username" class="form-label">نام کاربری</label>
+                            <input type="text" class="form-control" id="username" name="username" value="{{ form.username.value }}" required>
+                            <div class="invalid-feedback">لطفاً نام کاربری خود را وارد کنید.</div>
+                        </div>
+                        <!-- فیلد نام -->
+                        <div class="form-group mb-3">
+                            <label for="first_name" class="form-label">نام</label>
+                            <input type="text" class="form-control" id="first_name" name="first_name" value="{{ form.first_name.value }}" required>
+                            <div class="invalid-feedback">لطفاً نام خود را وارد کنید.</div>
+                        </div>
+                        <!-- فیلد نام خانوادگی -->
+                        <div class="form-group mb-3">
+                            <label for="last_name" class="form-label">نام خانوادگی</label>
+                            <input type="text" class="form-control" id="last_name" name="last_name" value="{{ form.last_name.value }}" required>
+                            <div class="invalid-feedback">لطفاً نام خانوادگی خود را وارد کنید.</div>
+                        </div>
+                        <!-- فیلد ایمیل -->
+                        <div class="form-group mb-4">
+                            <label for="email" class="form-label">ایمیل</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ form.email.value }}" required>
+                            <div class="invalid-feedback">لطفاً یک ایمیل معتبر وارد کنید.</div>
+                        </div>
+                        <!-- دکمه‌ها -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'user_profile' %}" class="btn btn-outline-secondary me-md-2">
+                                <i class="fas fa-arrow-left"></i> بازگشت
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> ذخیره تغییرات
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

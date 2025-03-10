@@ -1,0 +1,40 @@
+
+
+<!-- پاپ‌آپ فرم ثبت نام -->
+<div class="modal fade" id="courseRegistrationModal" tabindex="-1" aria-labelledby="courseRegistrationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="courseRegistrationModalLabel">ثبت نام در دوره</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'home' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="name" class="form-label">نام کامل</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">ایمیل</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">شماره تماس</label>
+                        <input type="text" class="form-control" id="phone" name="phone" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="course" class="form-label">انتخاب دوره</label>
+                        <select class="form-select" id="course" name="course" required>
+                            <option value="" selected disabled>لطفاً یک دوره انتخاب کنید</option>
+                            {% for course in courses %}
+                                <option value="{{ course.id }}">{{ course.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">ثبت نام</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

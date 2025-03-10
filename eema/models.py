@@ -97,11 +97,11 @@ class Order(models.Model):
     ORDER_STATUS_CANCELLED = 'C'
 
     ORDER_STATUS_CHOICES = [
-        (ORDER_STATUS_PAID, 'paid'),
-        (ORDER_STATUS_UNPAID, 'unpaid'),
-        (ORDER_STATUS_CANCELLED, 'canceled'),
+        (ORDER_STATUS_PAID, 'پرداخت شده'),
+        (ORDER_STATUS_UNPAID, 'پرداخت نشده'),
+        (ORDER_STATUS_CANCELLED, 'لغو شده'),
     ]
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='orders')
+    customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='orders')
     date_created = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=1, choices=ORDER_STATUS_CHOICES, default=ORDER_STATUS_UNPAID)
 
@@ -109,7 +109,7 @@ class Order(models.Model):
     unpaid_orders = UnpaidOrderManager()
 
     def __str__(self):
-        return f'{self.customer.user.first_name}-{self.customer.user.last_name}'
+        return f'{self.customer.first_name}-{self.customer.last_name}'
 
 
 # ----------ORDER MODEL ----------
@@ -162,9 +162,9 @@ class StatusComment(models.Manager):
 
 
 class Comment(models.Model):
-    WAITING = 'W'
-    APPROVED = 'A'
-    NOT_APPROVED = 'NA'
+    WAITING = 'در حال بررسی'
+    APPROVED = 'منتشر شده'
+    NOT_APPROVED = 'تایید نشده'
 
     COMMENT_TYPE_CHOICES = [
         (WAITING, 'Waiting'),
@@ -176,10 +176,38 @@ class Comment(models.Model):
     body = models.TextField(max_length=1000)
     post = models.ForeignKey('BlogPost', on_delete=models.PROTECT, related_name='comments', null=True, blank=True)
     datetime_created = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=2, choices=COMMENT_TYPE_CHOICES, default=WAITING)
+    status = models.CharField(max_length=13, choices=COMMENT_TYPE_CHOICES, default=WAITING)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='replies')  # پاسخ‌ها
+    likes = models.ManyToManyField(CustomUser, related_name='liked_comments', blank=True)  # لایک‌ها
+    dislikes = models.ManyToManyField(CustomUser, related_name='disliked_comments', blank=True)  # دیس‌لایک‌ها
 
     objects = models.Manager()
     settingComments = StatusComment()
+
+    def __str__(self):
+        if self.post:
+            return f"Comment by {self.author.username} on {self.post.title}"
+        elif self.product:
+            return f"Comment by {self.author.username} on {self.product.title}"
+        else:
+            return f"Comment by {self.author.username} (No Post or Product)"
+
+    @property
+    def like_count(self):
+        return self.likes.count()
+
+    @property
+    def dislike_count(self):
+        return self.dislikes.count()
+
+    @property
+    def is_reply(self):
+        return self.parent is not None
+
+    def approved_replies(self):
+        return self.replies.filter(status=Comment.APPROVED)  # فقط ریپلای‌های تایید شده
+
+
 
 
 # ---------- COMMENT MODEL ----------
@@ -222,7 +250,7 @@ class BlogPost(models.Model):
         (DRAFT, 'Draft'),
         (PENDING_REVIEW, 'Pending Review'),
     ]
-
+    id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=255)
     body = RichTextField()
     slug = models.SlugField(unique=True, blank=True)
@@ -233,7 +261,6 @@ class BlogPost(models.Model):
     image = models.ImageField(upload_to='blog/blogpost_cover', default='default.jpg')
     datetime_created = models.DateTimeField(default=timezone.now)
     datetime_modified = models.DateTimeField(auto_now=True)
-
     def save(self, *args, **kwargs):
         validate_unique_title(self.title, self)
         if not self.slug or self.slug == "":
@@ -258,3 +285,45 @@ class BlogPost(models.Model):
 
 
 # ---------- BLOG POST MODEL ----------
+
+
+
+
+
+class Slide(models.Model):
+    title = models.CharField(max_length=200, verbose_name="عنوان")
+    description = models.TextField(verbose_name="توضیحات")
+    image = models.ImageField(upload_to='slides/', verbose_name="تصویر")
+    link = models.URLField(blank=True, verbose_name="لینک")
+    is_active = models.BooleanField(default=True, verbose_name="فعال")
+
+    class Meta:
+        verbose_name = "اسلاید"
+        verbose_name_plural = "اسلایدها"
+
+    def __str__(self):
+        return self.title
+
+from django.db import models
+
+class Course(models.Model):
+    name = models.CharField(max_length=200, verbose_name="نام دوره")
+    description = models.TextField(verbose_name="توضیحات دوره")
+    image = models.ImageField(upload_to='courses/', verbose_name="تصویر دوره")
+    duration = models.CharField(max_length=50, verbose_name="مدت زمان دوره")
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="قیمت دوره")
+    is_active = models.BooleanField(default=True, verbose_name="فعال")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="تاریخ ایجاد")
+
+    def __str__(self):
+        return self.name
+
+class CourseRegistration(models.Model):
+    name = models.CharField(max_length=100, verbose_name="نام کامل")
+    email = models.EmailField(verbose_name="ایمیل")
+    phone = models.CharField(max_length=15, verbose_name="شماره تماس")
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name="دوره")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="تاریخ ثبت نام")
+
+    def __str__(self):
+        return f"{self.name} - {self.course.name}"

@@ -1,39 +1,52 @@
 {% extends '_base.html' %}
 {% load static %}
+{% load jalali_tags %}
 {% block page_title %}{{ post.title }}{% endblock page_title %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/css_blog.css' %}">
+    <link rel="stylesheet" href="{% static 'css/css_blog.css' %}">
 {% endblock extra_css %}
 
 {% block content %}
-<div class="container mt-5">
+    <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-12">
             <div class="blog-container p-4">
                 <h1 class="mb-4 text-center blog-title">{{ post.title }}</h1>
                 <div class="blog-content">
-                    <p class="text-muted">نویسنده: {{ post.author.get_full_name }} - تاریخ: {{ post.datetime_created|date:"Y/m/d" }}</p>
-                    <p>{{ post.body }}</p>
+                    <p class="text-muted">نویسنده: {{ post.author.get_full_name }} -
+                        تاریخ: {{ post.datetime_created|date:"Y/m/d" }}</p>
+                    <p>{{ post.body|safe }}</p>
                 </div>
                 <div id="comments-container" data-blog-slug="{{ post.slug }}" class="comments-section mt-5">
-                    <h3>کامنت‌ها</h3>
-                    <!-- کامنت‌ها به اینجا اضافه می‌شوند -->
+                    <h3 class="mb-4">نظرات:</h3>
+                    <div class="comment-list">
+                        <!-- کامنت‌ها به اینجا اضافه می‌شوند -->
+                    </div>
                 </div>
-                <div id="alert-container"></div>  <!-- محل نمایش پیام بوت استرپ -->
+                <div id="alert-container" class="mt-3"></div>
                 <div class="add-comment mt-5">
-                    <h3>اضافه کردن کامنت</h3>
+                    <h3 class="mb-4 pr-3">ارسال یک نظر:</h3>
                     {% if user.is_authenticated %}
-                        <form id="comment-form" data-blog-slug="{{ post.slug }}">
+                        <form id="comment-form" data-blog-slug="{{ post.slug }}" class="needs-validation" novalidate>
                             {% csrf_token %}
-                            <div class="form-group">
-                                <label for="comment-body">متن کامنت</label>
-                                <textarea class="form-control" id="comment-body" name="body" rows="3" required></textarea>
+                            <div class="form-group mb-3">
+                                <label for="comment-body" class="form-label">متن نظر</label>
+                                <textarea class="form-control" id="comment-body" name="body" rows="5" required
+                                          placeholder="نظر خود را اینجا بنویسید..."></textarea>
+                                <div class="invalid-feedback">
+                                    لطفاً متن نظر خود را وارد کنید.
+                                </div>
                             </div>
-                            <button type="submit" class="btn btn-primary">ارسال کامنت</button>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-paper-plane me-2"></i> ارسال کامنت
+                            </button>
                         </form>
                     {% else %}
-                        <p>برای ارسال نظر خود باید <a href="{% url 'login_signup' %}">ورود</a> یا <a href="{% url 'login_signup' %}">ثبت‌نام</a> کنید.</p>
+                        <div class="alert alert-info" role="alert">
+                            برای ارسال نظر خود باید <a href="{% url 'login_signup' %}" class="alert-link">ورود</a> یا
+                            <a href="{% url 'login_signup' %}" class="alert-link">ثبت‌نام</a> کنید.
+                        </div>
                     {% endif %}
                 </div>
             </div>

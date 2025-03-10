@@ -1,0 +1,12 @@
+{% extends '_base.html' %}
+{% block content %}
+    <div class="container">
+        <h1>{{ blog_detail.title }}</h1>
+        <p>نویسنده: {{ blog_detail.author }}</p>
+        <p>تاریخ ایجاد: {{ blog_detail.datetime_created|date:"Y/m/d" }}</p>
+        <img src="{{ blog_detail.image.url }}" alt="{{ blog_detail.title }}" class="img-fluid">
+        <div class="mt-4">
+            {{ blog_detail.body|linebreaks }}  <!-- نمایش محتوای وبلاگ -->
+        </div>
+    </div>
+{% endblock content %}

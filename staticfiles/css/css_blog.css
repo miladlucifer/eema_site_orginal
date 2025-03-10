@@ -1,10 +1,3 @@
-
-
-.container {
-    max-width: 1200px;
-    margin-top: 50px;
-}
-
 /* استایل‌های کادر شیشه‌ای */
 .blog-container {
     background: rgba(255, 255, 255, 0.2); /* شفافیت بیشتر */
@@ -14,16 +7,6 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 30px;
     border: 1px solid rgba(255, 255, 255, 0.3); /* افزودن مرز برای شیشه‌ای‌تر شدن */
-}
-
-/* استایل‌های عنوان وبلاگ */
-.blog-title {
-    font-family: 'IranYekan', sans-serif;
-    color: #343a40;
-    font-size: 2.5rem;
-    border-bottom: 2px solid #007bff;
-    padding-bottom: 10px;
-    margin-bottom: 30px;
 }
 
 /* استایل‌های کارت‌های وبلاگ */
@@ -42,19 +25,19 @@
 .card-img-top {
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
-    width: 23%;
-    max-height: 100px; /* تغییر سایز عکس‌ها */
+    width: 100%;
+    max-height: 150px; /* تغییر سایز عکس‌ها */
     object-fit: cover;
 }
 
 .card-title {
-    font-size: 2rem;
+    font-size: 1.5rem; /* تغییر اندازه فونت عنوان */
     font-weight: bold;
     color: #007bff;
 }
 
 .card-text {
-    font-size: 1.5rem;
+    font-size: 1rem; /* تغییر اندازه فونت متن */
     color: #6c757d;
 }
 
@@ -64,13 +47,13 @@
     border-color: #007bff;
     border-radius: 10px;
     padding: 5px;
-    font-size: 1.5rem;
+    font-size: 1rem; /* تغییر اندازه فونت دکمه */
     transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
 }
 
 .btn-primary:hover {
     background-color: #0056b3;
-    border-color: #0056b3;!important;
+    border-color: #0056b3;
 }
 
 /* استایل متن بارگذاری */
@@ -86,6 +69,13 @@
 }
 
 /* استایل‌های ریسپانسیو */
+@media (max-width: 992px) {
+    .blog-container .col-lg-6 {
+        flex: 0 0 100%; /* یک ستون در اندازه‌های کمتر از 992px */
+        max-width: 100%;
+    }
+}
+
 @media (max-width: 768px) {
     .blog-title {
         font-size: 2rem;
@@ -107,40 +97,20 @@
 
 @media (max-width: 576px) {
     .blog-title {
-        font-size: 3.5rem;
+        font-size: 1.5rem;
     }
 
     .card-title {
-        font-size: 3rem;
+        font-size: 1rem;
     }
 
     .card-text {
-        font-size: 2.5rem;
+        font-size: 0.8rem;
     }
 
     .btn-primary {
-        font-size: 2.5rem;
+        font-size: 0.8rem;
         padding: 6px;
         width: 100%;
     }
-}
-
-.header-toolbar__btn.mini-cart-btn .mini-cart-count,
-.btn:hover:after,
-.btn-bg-red,
-.btn-bg-red:after,
-.btn-submit:hover,
-.nav-hover-2 .slick-btn:hover,
-.nav-hover-2 .accordion-slider__btn:hover,
-.nav-hover-2 .accordion-click-slider__btn:hover,
-.comment .reply:hover,
-.newsletter-form__submit,
-.product-badge,
-.eema-product:hover .btn,
-.eema-product:hover .btn:after,
-.tab-style-1 .nav-link:after,
-.tab-style-1 .nav-link.active,
-.user-dashboard-tab__head .nav-link.active,
-.user-dashboard-tab__head .nav-link:hover {
-    background-color: #007bff;
 }

@@ -1,15 +1,305 @@
-<!DOCTYPE html>
-<html lang="fa">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>پنل کاربر</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-<body>
-    <div class="container mt-4">
-        <h1>پنل کاربر</h1>
-        <!-- محتوای مخصوص کاربران عادی -->
+{% extends '_base.html' %}
+{% load custom_tags %}
+{% load jdatetime_tags %}
+{% block page_title %}پنل کاربری{% endblock %}
+{% block content %}
+    <div class="container-fluid mt-5">
+        <div class="row">
+            <!-- منوی کناری -->
+            <div class="col-md-2">
+                <div class="list-group">
+                    <a href="{% url 'user_profile' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user"></i> پروفایل
+                    </a>
+                    <a href="{% url 'edit_user_profile' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-edit"></i> ویرایش پروفایل
+                    </a>
+                    <a href="{% url 'user_orders' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-shopping-cart"></i> سفارشات
+                    </a>
+                    <a href="{% url 'user_comments' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-comments"></i> نظرات من
+                    </a>
+                    <a href="{% url 'ticket_list' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-ticket-alt"></i> تیکت‌ها
+                    </a>
+                    <a href="{% url 'password_change' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-key"></i> تغییر رمز عبور
+                    </a>
+                    <a href="{% url 'custom_logout' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-sign-out-alt"></i> خروج
+                    </a>
+                </div>
+            </div>
+
+            <!-- محتوای اصلی -->
+            <div class="col-md-10">
+                <!-- دکمه‌های اقدام سریع -->
+                <div class="text-center mb-4">
+                    <a href="#" class="btn btn-primary btn-lg mx-2">
+                        <i class="fas fa-plus"></i> سفارش جدید
+                    </a>
+                    <a href="#" class="btn btn-success btn-lg mx-2">
+                        <i class="fas fa-envelope"></i> ارسال پیام
+                    </a>
+                </div>
+
+                <!-- کارت‌های اطلاعات -->
+                <div class="row mb-4">
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-white bg-success h-100">
+                            <div class="card-body text-center">
+                                <h5 class="card-title color--white">تعداد سفارشات</h5>
+                                <p class="card-text display-4 color--white">{{ total_orders }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-white bg-info h-100">
+                            <div class="card-body text-center">
+                                <h5 class="card-title color--white">تعداد نظرات</h5>
+                                <p class="card-text display-4 color--white">{{ total_comments }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-white bg-warning h-100">
+                            <div class="card-body text-center">
+                                <h5 class="card-title color--white">تعداد پیام‌ها</h5>
+                                <p class="card-text display-4 color--white">{{ total_messages }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-white bg-danger h-100">
+                            <div class="card-body text-center">
+                                <h5 class="card-title color--white">تیکت‌های باز</h5>
+                                <p class="card-text display-4 color--white">{{ open_tickets }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- نمودارها -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="card-title color--white">داشبورد</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <canvas id="ordersChart"></canvas>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <canvas id="commentsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- بخش تیکت‌ها -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="card-title color--white">تیکت‌ها</h3>
+                    </div>
+                    <div class="card-body">
+                        <a href="{% url 'create_ticket' %}" class="btn btn-success mb-3">
+                            <i class="fas fa-plus"></i> ایجاد تیکت جدید
+                        </a>
+                        <div class="table-responsive text-center">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>شماره تیکت</th>
+                                    <th>موضوع</th>
+                                    <th>وضعیت</th>
+                                    <th>تاریخ ایجاد</th>
+                                    <th>عملیات</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for ticket in tickets %}
+                                    <tr>
+                                        <td>{{ ticket.id }}</td>
+                                        <td>{{ ticket.subject }}</td>
+                                        <td>{{ ticket.get_status_display }}</td>
+                                        <td>{{ ticket.created_at|to_jalali }}</td>
+                                        <td>
+                                            <a href="{% url 'ticket_detail' ticket.id %}"
+                                               class="btn btn-primary btn-sm">
+                                                <i class="fas fa-eye"></i> مشاهده
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- جدول آخرین سفارشات -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">آخرین سفارشات</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>شماره سفارش</th>
+                                    <th>محصول</th>
+                                    <th>تعداد</th>
+                                    <th>قیمت کل</th>
+                                    <th>وضعیت</th>
+                                    <th>تاریخ سفارش</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for order in orders %}
+                                    <tr>
+                                        <td>{{ order.id }}</td>
+                                        <td>
+                                            <ul>
+                                                {% for item in order.items.all %}
+                                                    <li>{{ item.product.name }} - {{ item.quantity }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </td>
+                                        <td>{{ order.items.count }}</td>
+                                        <td>{{ order|total_price }}</td>
+                                        <td>{{ order.get_status_display }}</td>
+                                        <td>{{ order.date_created|to_jalali }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</body>
-</html>
+
+    <!-- اسکریپت‌ها -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-jalaali/0.9.2/moment-jalaali.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: '{% url "order_data" %}',
+                method: 'GET',
+                success: function (data) {
+                    const labels = data.labels.map(date => {
+                        return moment(date, 'YYYY-MM').locale('fa').format('MMMM YYYY'); // تبدیل تاریخ‌ها به شمسی
+                    });
+
+                    const ordersConfig = {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'سفارشات',
+                                data: data.data,
+                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'تعداد',
+                                        font: {
+                                            size: 16,
+                                            family: 'IRANSans',
+                                            weight: 'bold'
+                                        }
+                                    }
+                                },
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'ماه',
+                                        font: {
+                                            size: 16,
+                                            family: 'IRANSans',
+                                            weight: 'bold'
+                                        }
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    labels: {
+                                        font: {
+                                            family: 'IRANSans'
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    };
+                    const ordersChart = new Chart(
+                        document.getElementById('ordersChart'),
+                        ordersConfig
+                    );
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            $.ajax({
+                url: '{% url "comment_data" %}',
+                method: 'GET',
+                success: function (data) {
+                    const commentsConfig = {
+                        type: 'pie',
+                        data: {
+                            labels: ['تایید شده', 'در انتظار تایید', 'رد شده'],
+                            datasets: [{
+                                label: 'نظرات',
+                                data: data.data,
+                                backgroundColor: [
+                                    'rgba(75, 192, 192, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                    'rgba(255, 99, 132, 0.2)'
+                                ],
+                                borderColor: [
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(255, 99, 132, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,  // فعال کردن واکنش‌گرایی
+                            maintainAspectRatio: false,  // غیرفعال کردن حفظ نسبت ابعاد
+                            layout: {
+                                padding: 10  // تنظیم فاصله داخلی
+                            },
+                            plugins: {
+                                legend: {
+                                    labels: {
+                                        font: {
+                                            family: 'IRANSans'
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    };
+                    const commentsChart = new Chart(
+                        document.getElementById('commentsChart'),
+                        commentsConfig
+                    );
+                }
+            });
+        });
+    </script>
+{% endblock content %}

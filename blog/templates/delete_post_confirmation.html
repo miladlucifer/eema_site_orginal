@@ -1,0 +1,39 @@
+{% extends 'base.html' %}  <!-- اگر از یک قالب پایه استفاده می‌کنید -->
+
+{% block content %}
+<h1>تأیید حذف پست: {{ post.title }}</h1>
+
+<!-- نمایش کامنت‌ها -->
+<h2>کامنت‌ها</h2>
+<ul>
+    {% for comment in post.comments %}
+    <li>
+        {{ comment.text }}
+        <form action="{% url 'delete_comment' comment.id %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">حذف کامنت</button>
+        </form>
+    </li>
+    {% endfor %}
+</ul>
+
+<!-- نمایش دسته‌بندی‌ها -->
+<h2>دسته‌بندی‌ها</h2>
+<ul>
+    {% for category in post.category %}
+    <li>
+        {{ category.name }}
+        <form action="{% url 'delete_category' category.id %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">حذف دسته‌بندی</button>
+        </form>
+    </li>
+    {% endfor %}
+</ul>
+
+<!-- فرم حذف پست اصلی -->
+<form action="{% url 'delete_post' post.slug %}" method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">حذف پست</button>
+</form>
+{% endblock %}

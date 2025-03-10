@@ -16,7 +16,7 @@ from django.contrib.messages import constants as messages
 from django.conf.global_settings import AUTH_USER_MODEL, LOGIN_REDIRECT_URL, MESSAGE_STORAGE, MEDIA_URL, MEDIA_ROOT
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # Quick-start development settings - unsuitable for production
@@ -26,9 +26,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-kz+dqjitz)7@=f)u^pqyd8r)a8=l$+7l*ok^*g$59c77s$yw8v'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['eemasite.ir', 'www.eemasite.ir']
 
 
 # Application definition
@@ -86,7 +86,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # این خط را اضافه کنید
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -94,7 +94,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'panels.context_processors.is_admin_user',
             ],
         },
     },
@@ -160,7 +159,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'fa'
+
 
 LANGUAGES = (
     ('en', 'English'),
@@ -168,6 +167,10 @@ LANGUAGES = (
 )
 
 TIME_ZONE = 'Asia/Tehran'
+
+DEFAULT_CHARSET = 'utf-8'
+LANGUAGE_CODE = 'fa-ir'
+
 
 USE_I18N = True
 USE_L10N = True
@@ -261,6 +264,6 @@ MESSAGE_TAGS = {
 ACCOUNT_SESSION_REMEMBER = True
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 

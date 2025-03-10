@@ -9,6 +9,7 @@ class CustomUser(AbstractUser):
     is_user = models.BooleanField(default=True)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     email = models.EmailField(unique=True)
+    avatar = models.ImageField(upload_to='media/blog/image_avatar', null=True, blank=True)
 
     def full_name(self):
         return f'{self.first_name} {self.last_name}'

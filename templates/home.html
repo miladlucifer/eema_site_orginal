@@ -1,6 +1,243 @@
-{% extends '_base.html' %}
+    {% extends '_base.html' %}
+{% load static %}
 {% block page_title %}صفحه اصلی{% endblock %}
 
 {% block content %}
-	<h1>Home page</h1>
+    <!-- اسلایدشو -->
+    <div class="slider">
+        <div class="slides">
+            {% for slide in slides %}
+                <div class="slide {% if forloop.first %}active{% endif %}">
+                    <img src="{{ slide.image.url }}" alt="{{ slide.title }}">
+                    <div class="slide-content">
+                        <h2>{{ slide.title }}</h2>
+                        <p>{{ slide.description }}</p>
+                        {% if slide.link %}
+                            <a href="{{ slide.link }}" class="btn">مشاهده بیشتر</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- نقاط نشان‌دهنده اسلایدها -->
+        <div class="slider-dots">
+            {% for slide in slides %}
+                <span class="dot {% if forloop.first %}active{% endif %}"
+                      onclick="goToSlide({{ forloop.counter0 }})"></span>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- دکمه‌های بالای خدمات ما -->
+    <div class="service-buttons text-center mb-5 mt--5">
+        <button type="button" style="font-size: 13px" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#courseRegistrationModal">
+    ثبت نام در دوره
+</button>
+        <a href="{% url 'course_list' %}" style="font-size: 13px" class="btn btn-info btn-lg mx-2">دوره‌های آموزشی</a>
+        <a href="#" style="font-size: 13px" class="btn btn-primary  btn-lg mx-2">مشاوره طراحی سایت</a>
+    </div>
+
+    <!-- خدمات ما -->
+    <section id="services" class="services-section py-5 bg-light">
+        <div class="container">
+            <h2 class="section-title text-center mb-5">خدمات ما</h2>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card service-card text-center h-100 shadow">
+                        <div class="card-body">
+                            <i class="fas fa-laptop-code service-icon fa-3x mb-3 text-primary"></i>
+                            <h3 class="service-title">طراحی سایت</h3>
+                            <p class="service-text">طراحی سایت‌های مدرن و ریسپانسیو با آخرین تکنولوژی‌ها.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card service-card text-center h-100 shadow">
+                        <div class="card-body">
+                            <i class="fas fa-mobile-alt service-icon fa-3x mb-3 text-success"></i>
+                            <h3 class="service-title">توسعه اپلیکیشن</h3>
+                            <p class="service-text">توسعه اپلیکیشن‌های موبایل برای پلتفرم‌های iOS و Android.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card service-card text-center h-100 shadow">
+                        <div class="card-body">
+                            <i class="fas fa-chart-line service-icon fa-3x mb-3 text-info"></i>
+                            <h3 class="service-title">سئو و بهینه‌سازی</h3>
+                            <p class="service-text">بهینه‌سازی سایت برای موتورهای جستجو و افزایش ترافیک.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- نمونه کارها -->
+    <section id="portfolio" class="portfolio-section py-5">
+        <div class="container">
+            <h2 class="section-title text-center mb-5">نمونه کارها</h2>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card portfolio-card h-100 shadow">
+                        <img src="{% static 'img/slide1.jpg' %}" alt="نمونه کار ۱" class="card-img-top">
+                        <div class="card-body">
+                            <h3 class="portfolio-title">وب‌سایت فروشگاهی</h3>
+                            <p class="portfolio-text">طراحی یک وب‌سایت فروشگاهی با امکانات پیشرفته.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card portfolio-card h-100 shadow">
+                        <img src="{% static 'img/slide2.jpg' %}" alt="نمونه کار ۲" class="card-img-top">
+                        <div class="card-body">
+                            <h3 class="portfolio-title">اپلیکیشن موبایل</h3>
+                            <p class="portfolio-text">توسعه یک اپلیکیشن موبایل برای مدیریت پروژه‌ها.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card portfolio-card h-100 shadow">
+                        <img src="{% static 'img/slide1.jpg' %}" alt="نمونه کار ۳" class="card-img-top">
+                        <div class="card-body">
+                            <h3 class="portfolio-title">سئو و بهینه‌سازی</h3>
+                            <p class="portfolio-text">بهینه‌سازی یک وب‌سایت و افزایش رتبه در گوگل.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- درباره ما -->
+    <section id="about" class="about-section py-5 bg-light">
+        <div class="container">
+            <h2 class="section-title text-center mb-5">درباره ما</h2>
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <img src="{% static 'img/photo1.png' %}" alt="درباره ما" class="img-fluid rounded shadow">
+                </div>
+                <div class="col-md-6">
+                    <p class="about-text lead">ما یک تیم متخصص و خلاق هستیم که با سال‌ها تجربه در زمینه طراحی و توسعه
+                        وب‌سایت و اپلیکیشن‌های موبایل، بهترین راه‌حل‌ها را برای کسب‌وکار شما ارائه می‌دهیم.</p>
+                    <ul class="about-list list-unstyled">
+                        <li class="mb-3"><i class="fas fa-check-circle text-primary"></i> طراحی سایت‌های مدرن و
+                            ریسپانسیو
+                        </li>
+                        <li class="mb-3"><i class="fas fa-check-circle text-success"></i> توسعه اپلیکیشن‌های موبایل</li>
+                        <li class="mb-3"><i class="fas fa-check-circle text-info"></i> سئو و بهینه‌سازی سایت</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- نظرات مشتریان -->
+    <section id="testimonials" class="testimonials-section py-5">
+        <div class="container">
+            <h2 class="section-title text-center mb-5">نظرات مشتریان</h2>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card testimonial-card h-100 shadow">
+                        <div class="card-body">
+                            <p class="testimonial-text">"طراحی سایت ما توسط این تیم بسیار حرفه‌ای انجام شد. راضی‌کننده و
+                                به‌موقع!"</p>
+                            <h4 class="testimonial-author">علی محمدی</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card testimonial-card h-100 shadow">
+                        <div class="card-body">
+                            <p class="testimonial-text">"اپلیکیشن موبایل ما با بهترین کیفیت و در کوتاه‌ترین زمان تحویل
+                                داده شد."</p>
+                            <h4 class="testimonial-author">فاطمه رضایی</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card testimonial-card h-100 shadow">
+                        <div class="card-body">
+                            <p class="testimonial-text">"سئو سایت ما به‌طور چشم‌گیری بهبود یافت. بسیار متشکرم!"</p>
+                            <h4 class="testimonial-author">محمد حسینی</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- وبلاگ -->
+    <section id="blog" class="blog-section py-5 bg-light">
+        <div class="container">
+            <h2 class="section-title text-center mb-5">آخرین مقالات</h2>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card blog-card h-100 shadow">
+                        <img src="{% static 'img/slide1.jpg' %}" alt="مقاله ۱" class="card-img-top">
+                        <div class="card-body">
+                            <h3 class="blog-title">۱۰ نکته برای طراحی سایت بهتر</h3>
+                            <p class="blog-text">در این مقاله به ۱۰ نکته کلیدی برای طراحی سایت بهتر می‌پردازیم.</p>
+                            <a href="#" class="btn btn-primary">مطالعه بیشتر</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card blog-card h-100 shadow">
+                        <img src="{% static 'img/slide1.jpg' %}" alt="مقاله ۲" class="card-img-top">
+                        <div class="card-body">
+                            <h3 class="blog-title">بهینه‌سازی سایت برای موتورهای جستجو</h3>
+                            <p class="blog-text">راه‌کارهای سئو و بهینه‌سازی سایت برای افزایش ترافیک.</p>
+                            <a href="#" class="btn btn-primary">مطالعه بیشتر</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card blog-card h-100 shadow">
+                        <img src="{% static 'img/slide1.jpg' %}" alt="مقاله ۳" class="card-img-top">
+                        <div class="card-body">
+                            <h3 class="blog-title">توسعه اپلیکیشن‌های موبایل</h3>
+                            <p class="blog-text">مراحل توسعه اپلیکیشن‌های موبایل و نکات کلیدی.</p>
+                            <a href="#" class="btn btn-primary">مطالعه بیشتر</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- تماس با ما -->
+    <section id="contact" class="contact-section py-5">
+        <div class="container">
+            <h2 class="section-title text-center mb-5">تماس با ما</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <form class="contact-form shadow p-4 rounded bg-light">
+                        <div class="form-group mb-3">
+                            <input type="text" class="form-control" placeholder="نام شما">
+                        </div>
+                        <div class="form-group mb-3">
+                            <input type="email" class="form-control" placeholder="ایمیل شما">
+                        </div>
+                        <div class="form-group mb-3">
+                            <textarea class="form-control" rows="5" placeholder="پیام شما"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">ارسال پیام</button>
+                    </form>
+                </div>
+                <div class="col-md-6">
+                    <div class="contact-info shadow p-4 rounded bg-light">
+                        <p><i class="fas fa-map-marker-alt"></i> آدرس: تهران، خیابان آزادی، کوچه‌ی نمونه</p>
+                        <p><i class="fas fa-phone"></i> تلفن: ۰۲۱-۱۲۳۴۵۶۷۸</p>
+                        <p><i class="fas fa-envelope"></i> ایمیل: info@example.com</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+
+
+
 {% endblock %}

@@ -1,0 +1,49 @@
+{% extends '_base.html' %}
+{% block content %}
+{% load gravatar %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-lg card animate__animated animate__fadeInUp">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="card-title text-center color--white">پروفایل کاربری</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 text-center">
+                                <img src="https://www.gravatar.com/avatar/{{ user.email|hash }}?s=150&d=identicon"
+                                     alt="User Image" class="img-fluid rounded-circle mb-3">
+                                <h4>{{ user.username }}</h4>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label class="form-label"><strong>نام کاربری:</strong></label>
+                                    <p>{{ user.username }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label"><strong>نام:</strong></label>
+                                    <p>{{ user.first_name }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label"><strong>نام خانوادگی:</strong></label>
+                                    <p>{{ user.last_name }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label"><strong>ایمیل:</strong></label>
+                                    <p>{{ user.email }}</p>
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <a href="{% url 'edit_user_profile' %}" class="btn btn-outline-primary">ویرایش
+                                        پروفایل</a>
+                                    <a href="{% url 'password_change' %}" class="btn btn-outline-secondary">تغییر رمز
+                                        عبور</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

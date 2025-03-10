@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.db.models import Count
 
 from . import models
-from .models import OrderItem
+from .models import OrderItem, Slide, Course, CourseRegistration
 
 from django.contrib import admin
 from .models import BlogPost
@@ -108,7 +108,30 @@ class OrderItem(admin.ModelAdmin):
 
 @admin.register(models.Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ['id', 'author', 'body', 'status', 'product__name']
+    list_display = ['id', 'author', 'body','post', 'status', 'product__name']
     list_editable = ['status']
     list_per_page = 10
     list_select_related = ['product']
+
+
+@admin.register(Slide)
+class SlideAdmin(admin.ModelAdmin):
+    list_display = ('title', 'is_active')
+    list_filter = ('is_active',)
+    search_fields = ('title', 'description')
+
+
+
+@admin.register(Course)
+class CourseAdmin(admin.ModelAdmin):
+    list_display = ('name', 'duration', 'price', 'is_active', 'created_at')
+    list_filter = ('is_active', 'created_at')
+    search_fields = ('name', 'description')
+
+
+
+@admin.register(CourseRegistration)
+class CourseRegistrationAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'phone', 'course', 'created_at')
+    list_filter = ('course', 'created_at')
+    search_fields = ('name', 'email', 'phone')

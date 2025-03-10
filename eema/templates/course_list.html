@@ -1,0 +1,30 @@
+{% extends '_base.html' %}
+
+{% block content %}
+<!-- صفحه دوره‌های آموزشی -->
+<section class="course-list py-5">
+    <div class="container">
+        <h1 class="text-center mb-5">دوره‌های آموزشی</h1>
+        <div class="row">
+            {% for course in courses %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow">
+                        <img src="{{ course.image.url }}" class="card-img-top" alt="{{ course.name }}">
+                        <div class="card-body">
+                            <h2 class="card-title">{{ course.name }}</h2>
+                            <p class="card-text">{{ course.description|truncatewords:30 }}</p>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item"><strong>مدت زمان:</strong> {{ course.duration }}</li>
+                                <li class="list-group-item"><strong>قیمت:</strong> {{ course.price }} تومان</li>
+                            </ul>
+                        </div>
+                        <div class="card-footer">
+                            <a href="{% url 'course_detail' course.id %}" class="btn btn-primary">جزئیات بیشتر</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

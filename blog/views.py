@@ -3,10 +3,13 @@ from django.views.generic import DetailView
 from eema.models import BlogPost , Comment, Category
 from django.http import JsonResponse
 from .forms import BlogPostForm
-
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 
 def blog_page(request):
     return render(request, 'blog.html')
+
 
 
 class BlogPostDetailView(DetailView):
@@ -58,9 +61,4 @@ def update_blog_post(request, slug):
     else:
         form = BlogPostForm(instance=blog_post)
     return render(request, 'update_blog_post.html', {'form': form, 'blog_post': blog_post})
-
-
-
-
-
 

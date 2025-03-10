@@ -1,0 +1,32 @@
+{% extends '_base.html' %}
+{% block content %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="card-title mb-0">ایجاد تیکت جدید</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="id_department">دپارتمان</label>
+                                {{ form.department }}
+                            </div>
+                            <div class="form-group">
+                                <label for="id_subject">موضوع</label>
+                                {{ form.subject }}
+                            </div>
+                            <div class="form-group">
+                                <label for="id_message">متن پیام</label>
+                                {{ form.message }}
+                            </div>
+                            <button type="submit" class="btn btn-success">ارسال تیکت</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

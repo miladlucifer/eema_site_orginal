@@ -1,0 +1,44 @@
+{% extends '_base.html' %}
+
+{% block content %}
+<!-- صفحه جزئیات دوره -->
+<section class="course-detail py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <h1>{{ course.name }}</h1>
+                <img src="{{ course.image.url }}" class="img-fluid img-car-detail-course mb-4" alt="{{ course.name }}">
+                <p>{{ course.description }}</p>
+                <ul class="list-group mb-4">
+                    <li class="list-group-item"><strong>مدت زمان:</strong> {{ course.duration }}</li>
+                    <li class="list-group-item"><strong>قیمت:</strong> {{ course.price }} تومان</li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow sticky-card">
+                    <div class="card-body ">
+                        <h3 class="card-title">  ثبت نام در دوره {{ course.name }} </h3>
+                        <form method="post" action="{% url 'course_registration' %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="name" class="form-label">نام کامل</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">ایمیل</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">شماره تماس</label>
+                                <input type="text" class="form-control" id="phone" name="phone" required>
+                            </div>
+                            <input type="hidden" name="course" value="{{ course.id }}">
+                            <button type="submit" class="btn btn-primary w-100">ثبت نام</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

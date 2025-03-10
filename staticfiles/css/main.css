@@ -140,6 +140,7 @@ body {
     font-weight: 400;
     overflow-x: hidden;
     overflow-y: auto;
+    padding-top: 120px;
 }
 
 h1,
@@ -1720,12 +1721,12 @@ textarea,
 
 /*-- 23.03 - Close Button --*/
 .btn-close {
-    font-size: 40px;
+    font-size: 15px;
     display: block;
     position: absolute;
     z-index: 5;
     line-height: 40px;
-    height: 40px;
+    height: 50px;
     opacity: 1;
 }
 
@@ -25152,3 +25153,4 @@ input.form-control {
     background-color: #f8f9fa;
     border-top: 1px solid #ddd;
 }
+

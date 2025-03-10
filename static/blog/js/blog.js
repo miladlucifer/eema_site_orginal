@@ -1,201 +1,73 @@
-function convertToPersianNumbers() {
-    const persianNumbers = {
-        '0': '۰',
-        '1': '۱',
-        '2': '۲',
-        '3': '۳',
-        '4': '۴',
-        '5': '۵',
-        '6': '۶',
-        '7': '۷',
-        '8': '۸',
-        '9': '۹'
-    };
-
-    function traverseAndConvert(node) {
-        if (node.nodeType === 3) {
-            node.nodeValue = node.nodeValue.replace(/[0-9]/g, function (w) {
-                return persianNumbers[w] || w;
-            });
-        } else {
-            for (let i = 0; i < node.childNodes.length; i++) {
-                traverseAndConvert(node.childNodes[i]);
-            }
-        }
-    }
-
-    traverseAndConvert(document.body);
-}
-
-// بارگذاری محتوای وبلاگ با استفاده از جاوااسکریپت
-
-let page = 1;
+let page = 0; // شروع از صفحه‌ی 0
 let loading = false;
 let hasNext = true;
 
-document.addEventListener("DOMContentLoaded", function () {
-    loadBlogPosts();
-    window.addEventListener('scroll', function () {
-        if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 100 && !loading && hasNext) {
+// ایجاد Intersection Observer
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting && !loading && hasNext) {
             page++;
-            loadBlogPosts();
+            loadMorePosts();
         }
     });
-
-    // تنظیمات اولیه برای فرم ارسال کامنت
-    const commentForm = document.getElementById('comment-form');
-    const commentBody = document.getElementById('comment-body');
-
-    if (commentForm) {
-        commentForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            const blogId = commentForm.getAttribute('data-blog-id');
-            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-
-            fetch(`/api/blog/${blogId}/comments/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrftoken,
-                },
-                body: JSON.stringify({
-                    body: commentBody.value,
-                })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                // اضافه کردن کامنت جدید به لیست کامنت‌ها
-                let newComment = `
-                    <div class="comment">
-                        <p class="comment-author">${data.author_name}</p>
-                        <p class="comment-body">${data.body}</p>
-                        <p class="comment-date">${new Date(data.datetime_created).toLocaleDateString('fa-IR')}</p>
-                    </div>
-                    <hr>
-                `;
-                const commentsContainer = document.getElementById(`comments-container-${blogId}`);
-                commentsContainer.innerHTML += newComment;
-                commentBody.value = ''; // پاک کردن محتوای فیلد کامنت
-            })
-            .catch(error => {
-                console.error('Error posting comment:', error);
-                alert("مشکلی در ارسال کامنت وجود دارد.");
-            });
-        });
-    }
+}, {
+    threshold: 0.1 // وقتی ۱۰٪ المان وارد viewport شد، عمل کن
 });
 
-function loadBlogPosts() {
-    $.ajax({
-        url: `/api/blog/?page=${page}`,  // استفاده از شماره صفحه
-        method: 'GET',
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-        },
-        success: function (data) {
-            console.log("Received data:", data); // بررسی داده‌های دریافتی
-            let blogPostsHTML = "";
-            data.results.forEach(post => {
-                console.log("Processing post:", post); // بررسی داده‌های هر پست
+// المان Sentinel (نشانگر) برای تشخیص رسیدن به انتهای صفحه
+const sentinel = document.createElement('div');
+document.body.appendChild(sentinel);
+observer.observe(sentinel);
 
-                // اطمینان از دریافت دسته‌بندی‌ها
-                let categories = post.category_display && post.category_display.length > 0 ? post.category_display.map(category => category.title).join(', ') : 'بدون دسته‌بندی';
-                console.log("Categories for post:", categories); // لاگ کردن دسته‌بندی‌های هر پست
+// تابع برای بارگذاری پست‌های بیشتر
+function loadMorePosts() {
+    if (loading || !hasNext) return; // اگر در حال بارگذاری هست یا صفحه‌ی بعدی وجود نداره، کاری نکن
+    loading = true;
 
-                blogPostsHTML += `
-                    <div class="col-md-6">
-                        <div class="card blog-card">
-                            ${post.image ? `<img src="${post.image}" class="card-img-top" alt="${post.title}">` : ''}
-                            <div class="card-body">
-                                <h3 class="card-title">${post.title}</h3>
-                                <p class="card-text text-muted small">نویسنده: ${post.author_name} - تاریخ: ${new Date(post.datetime_created).toLocaleDateString('fa-IR')}</p>
-                                <p class="card-text">${limitWords(post.short_body, 50)}</p>
-                                <p class="card-text"><strong>دسته‌بندی‌ها:</strong> ${categories ? categories : 'بدون دسته‌بندی'}</p>
-                            </div>
-                            <div class="card-footer text-right">
-                                <a href="/blog/${post.slug}/" class="btn btn-primary">ادامه مطلب</a>  <!-- استفاده از slug -->
-                            </div>
-                            <div id="comments-container-${post.id}" class="comments-section mt-5" data-blog-id="${post.id}">
-                                <h3>کامنت‌ها</h3>
-                                
+    // نمایش اسپینر در حال بارگذاری
+    document.getElementById('loading').style.display = 'block';
+
+    fetch(`/api/blog/?page=${page}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.results && Array.isArray(data.results)) { // بررسی وجود data.results
+                data.results.forEach(post => {
+                    document.getElementById('blog-posts').innerHTML += `
+                        <div class="col-md-6">
+                            <div class="card blog-card">
+                                ${post.image ? `<img src="${post.image}" class="card-img-top" alt="${post.title}">` : ''}
+                                <div class="card-body">
+                                    <h3 class="card-title">${post.title}</h3>
+                                    <p class="card-text text-muted small">نویسنده: ${post.author_name} - تاریخ: ${new Date(post.datetime_created).toLocaleDateString('fa-IR')}</p>
+                                    <p class="card-text">${limitWords(post.short_body, 50)}</p>
+                                    <p class="card-text"><strong>دسته‌بندی‌ها:</strong> ${post.category_display ? post.category_display.map(category => category.title).join(', ') : 'بدون دسته‌بندی'}</p>
+                                </div>
+                                <div class="card-footer text-right">
+                                    <a href="/blog/${post.slug}/" class="btn btn-primary">ادامه مطلب</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                `;
-            });
-
-            if (page === 1) {
-                document.getElementById("blog-posts").innerHTML = blogPostsHTML; // جایگزین کردن محتوای قبلی با محتوای جدید
-            } else {
-                document.getElementById("blog-posts").innerHTML += blogPostsHTML; // اضافه کردن محتوای جدید به محتوای قبلی
-            }
-
-            convertToPersianNumbers(); // تبدیل اعداد به فارسی
-            hasNext = !!data.next; // بررسی وجود صفحه بعدی
-            loading = false; // تنظیم وضعیت بارگذاری به false
-
-            // بارگذاری کامنت‌ها برای هر پست
-            data.results.forEach(post => {
-                loadComments(post.id);
-            });
-        },
-        error: function (xhr, status, error) {
-            console.error("Error loading blog posts:", status, error);
-            loading = false; // تنظیم وضعیت بارگذاری به false در صورت بروز خطا
-        }
-    });
-}
-
-function loadComments(blogId) {
-    let nextPageUrl = `/api/blog/${blogId}/comments/`;
-    const commentsContainer = document.getElementById(`comments-container-${blogId}`);
-
-    function fetchComments() {
-        if (!nextPageUrl) return;
-
-        fetch(nextPageUrl)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                let commentsHTML = '';
-                data.results.forEach(comment => {
-                    commentsHTML += `
-                        <div class="comment">
-                            <p class="comment-author">${comment.author_name}</p>
-                            <p class="comment-body">${comment.body}</p>
-                            <p class="comment-date">${new Date(comment.datetime_created).toLocaleDateString('fa-IR')}</p>
-                        </div>
-                        <hr>
                     `;
                 });
-                commentsContainer.innerHTML += commentsHTML;
-                nextPageUrl = data.next;
-            })
-            .catch(error => {
-                console.error('Error fetching comments:', error);
-            });
-    }
 
-    // بارگذاری اولیه کامنت‌ها
-    fetchComments();
+                // مخفی کردن اسپینر بعد از بارگذاری
+                document.getElementById('loading').style.display = 'none';
 
-    // بارگذاری تدریجی کامنت‌ها هنگام اسکرول کردن
-    window.addEventListener('scroll', () => {
-        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
-            fetchComments();
-        }
-    });
+                loading = false;
+                hasNext = !!data.next; // بررسی وجود صفحه‌ی بعدی
+            } else {
+                console.error('Invalid data structure:', data);
+            }
+        })
+        .catch(error => {
+            console.error('Error loading posts:', error);
+            document.getElementById('loading').style.display = 'none';
+            loading = false;
+        });
 }
 
+
+// تابع برای محدود کردن تعداد کلمات
 function limitWords(text, maxWords) {
     let words = text.split(/\s+/);
     if (words.length > maxWords) {

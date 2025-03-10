@@ -105,9 +105,7 @@ function loadPosts(page = 1) {
                 return;
             }
 
-
-            let postsHTML = `<button class="btn-custom btn-info " onclick="createPostForm()">ایجاد پست جدید</button>
-
+            let postsHTML = `<button class="btn-custom btn-info" onclick="createPostForm()">ایجاد پست جدید</button>
 
 <table class="table table-hover table-striped mt-4">
                     <thead class="thead-dark text-center">
@@ -125,17 +123,15 @@ function loadPosts(page = 1) {
                     <td>${post.author_name}</td>
                     <td>${new Date(post.datetime_created).toLocaleDateString('fa-IR')}</td>
                     <td>
-                        <button class="btn btn-sm btn-info" onclick="viewPost(${post.id})">مشاهده</button>
-                        <button class="btn btn-sm btn-warning" onclick="editPost(${post.id})">ویرایش</button>
-                        <button class="btn btn-sm btn-danger" onclick="deletePost(${post.id})">حذف</button>
+                        <button class="btn btn-sm btn-info" onclick="viewPost('${post.slug}')">مشاهده</button> <!-- استفاده از 'post.slug' با گیومه -->
+                        <button class="btn btn-sm btn-warning" onclick="editPost('${post.slug}')">ویرایش</button> <!-- استفاده از 'post.slug' با گیومه -->
+                        <button class="btn btn-sm btn-danger" onclick="deletePost('${post.slug}')">حذف</button> <!-- استفاده از 'post.slug' با گیومه -->
                     </td>
                   </tr>`;
             });
             postsHTML += `</tbody></table>`;
 
-
-            let paginationHTML = `
-<div class="d-flex justify-content-between">`;
+            let paginationHTML = `<div class="d-flex justify-content-between">`;
             if (data.previous) {
                 paginationHTML += `<button class="btn btn-secondary" onclick="loadPosts(${page - 1})"${!data.previous ? ' disabled' : ''}>قبلی</button>`;
             }
@@ -156,20 +152,20 @@ function loadPosts(page = 1) {
     });
 }
 
+
 document.addEventListener("DOMContentLoaded", function () {
     console.log("JavaScript loaded."); // برای اطمینان از بارگذاری جاوااسکریپت
 
-    if (window.innerWidth <= 600) {
-        showDefaultContent();
-    }
     // تعریف رویداد کلیک برای دکمه داشبورد
     document.querySelectorAll('.nav-link').forEach(function (element) {
         element.addEventListener('click', function (event) {
-            event.preventDefault();
+            // event.preventDefault(); // این خط را حذف کنید
+
+            // کدهای دیگر
+            console.log("لینک کلیک شد:", element.href);
         });
     });
 });
-
 
 function showDefaultContent() {
     console.log("showDefaultContent called."); // برای اطمینان از فراخوانی فانکشن
@@ -229,6 +225,7 @@ function createPostForm() {
                         <h3 class="card-title large-title">ایجاد پست جدید</h3>
                     </div>
                     <div class="card-body">
+                        <div id="error-message" class="alert alert-danger mt-3" style="display: none;"></div> <!-- پیام خطا -->
                         <form id="createPostForm" enctype="multipart/form-data">
                             <div class="form-group">
                                 <label for="postTitle">عنوان</label>
@@ -301,10 +298,6 @@ function createPost() {
         categories.push(checkbox.value);
     });
 
-    if (categories.length === 0) {
-        alert("لطفاً حداقل یک دسته‌بندی را انتخاب کنید.");
-        return;
-    }
 
     // اضافه کردن دسته‌بندی‌ها به FormData به صورت جداگانه
     categories.forEach(category => formData.append('category', category));
@@ -312,33 +305,84 @@ function createPost() {
     // بررسی و لاگ کردن دسته‌بندی‌های انتخاب شده
     console.log("Selected categories:", categories);
 
-    // ارسال درخواست AJAX با استفاده از FormData
+    // بررسی عنوان پست قبل از ارسال
+    const postTitle = formData.get('title');
+
     $.ajax({
-        url: '/api/blog/',
-        method: 'POST',
+        url: `/api/blog/?title=${postTitle}`,
+        method: 'GET',
         headers: {
             'X-Requested-With': 'XMLHttpRequest',
             'X-CSRFToken': csrftoken
         },
-        data: formData,
-        processData: false,
-        contentType: false,
         success: function (response) {
-            console.log("پست با موفقیت ایجاد شد:", response);
-            loadPosts();  // بازخوانی لیست پست‌ها پس از ایجاد پست جدید
+            if (response.results.length > 0) {
+                showErrorMessage("عنوان این پست از قبل وجود دارد.");  // نمایش پیام خطا
+            } else {
+                // ارسال درخواست AJAX با استفاده از FormData
+                $.ajax({
+                    url: '/api/blog/',
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': csrftoken
+                    },
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        console.log("پست با موفقیت ایجاد شد:", response);
+                        loadPosts();  // بازخوانی لیست پست‌ها پس از ایجاد پست جدید
+                    },
+                    error: function (xhr, status, error) {
+                        console.log("Error status:", status);
+                        console.log("Error details:", error);
+                        console.log("Response text:", xhr.responseText);
+                        showErrorMessage("خطا در ایجاد پست.");
+                    }
+                });
+            }
         },
         error: function (xhr, status, error) {
-            console.log("Error status:", status);
-            console.log("Error details:", error);
-            console.log("Response text:", xhr.responseText);
+            console.log("Error checking title:", status, error);
+            showErrorMessage("خطا در بررسی عنوان.");
         }
     });
 }
 
+function showErrorMessage(message) {
+    // نمایش پیام خطا در بالای پنل ادمین
+    const errorMessageDiv = document.getElementById('error-message');
+    if (!errorMessageDiv) {
+        const newErrorMessageDiv = document.createElement('div');
+        newErrorMessageDiv.id = 'error-message';
+        newErrorMessageDiv.className = 'alert alert-danger';
+        newErrorMessageDiv.style.display = 'none';
+        document.getElementById('panel-content').prepend(newErrorMessageDiv);
+    }
+    document.getElementById('error-message').textContent = message;
+    document.getElementById('error-message').style.display = 'block';
+}
 
-function editPost(postId) {
+
+function showErrorMessage(message) {
+    // نمایش پیام خطا در بالای پنل ادمین
+    const errorMessageDiv = document.getElementById('error-message');
+    if (!errorMessageDiv) {
+        const newErrorMessageDiv = document.createElement('div');
+        newErrorMessageDiv.id = 'error-message';
+        newErrorMessageDiv.className = 'alert alert-danger';
+        newErrorMessageDiv.style.display = 'none';
+        document.getElementById('panel-content').prepend(newErrorMessageDiv);
+    }
+    document.getElementById('error-message').textContent = message;
+    document.getElementById('error-message').style.display = 'block';
+}
+
+
+function editPost(postSlug) {
     $.ajax({
-        url: `/api/blog/${postId}/`,
+        url: `/api/blog/${postSlug}/`,
         method: 'GET',
         headers: {
             'X-Requested-With': 'XMLHttpRequest'
@@ -407,7 +451,7 @@ function editPost(postId) {
                                         <label for="postImage">بارگذاری تصویر جدید:</label>
                                         <input type="file" class="form-control" id="postImage" name="image">
                                     </div>
-                                    <button type="button" class="btn btn-info" onclick="savePost(${post.id})">ذخیره تغییرات</button>
+                                    <button type="button" class="btn btn-info" onclick="savePost('${post.slug}')">ذخیره تغییرات</button> <!-- استفاده از 'post.slug' با گیومه -->
                                     <button type="button" class="btn btn-primary" onclick="loadPosts()">بازگشت</button>
                                 </form>
                             </div>
@@ -446,12 +490,14 @@ function editPost(postId) {
             console.log("Error status:", status);
             console.log("Error details:", error);
             console.log("Response text:", xhr.responseText);
+            alert("خطا در دریافت اطلاعات پست. لطفاً دوباره تلاش کنید.");
         }
     });
 }
 
 
-function savePost(postId) {
+
+function savePost(postSlug) {
     let formData = new FormData(document.getElementById('editPostForm'));
 
     // دریافت داده‌های CKEditor و اضافه کردن به FormData
@@ -472,7 +518,7 @@ function savePost(postId) {
 
     // ارسال درخواست AJAX با استفاده از FormData
     $.ajax({
-        url: `/api/blog/${postId}/`,
+        url: `/api/blog/${postSlug}/`,
         method: 'PUT',
         headers: {
             'X-Requested-With': 'XMLHttpRequest',
@@ -494,66 +540,258 @@ function savePost(postId) {
 }
 
 
-function deletePost(postId) {
-    if (confirm('آیا مطمئن هستید که می‌خواهید این پست را حذف کنید؟')) {
+async function deletePost(postSlug) {
+    try {
+        // دریافت اطلاعات پست از API
+        const response = await fetch(`/api/blog/${postSlug}/`);
+        const post = await response.json();
+
+        // نمایش پاسخ API در کنسول
+        console.log('API Response:', post);
+
+        // بررسی وجود کامنت‌ها یا دسته‌بندی‌ها
+        const hasComments = post.comments && post.comments.length > 0;
+        const hasCategories = post.category && post.category.length > 0;
+
+        if (hasComments || hasCategories) {
+            // اگر کامنت یا دسته‌بندی وجود دارد، پیام نمایش داده شود
+            const message = `
+                <div class="alert alert-warning">
+                    <strong>توجه!</strong>
+                    این پست دارای ${hasComments ? 'نظرات' : ''} ${hasComments && hasCategories ? 'و' : ''} ${hasCategories ? 'دسته‌بندی‌ها' : ''} است.
+                    لطفاً ابتدا از طریق بخش "مشاهده پست"، نظرات و دسته‌بندی‌ها را حذف کنید.
+                </div>
+            `;
+            document.getElementById('panel-content').innerHTML = message;
+        } else {
+            // اگر هیچ کامنت یا دسته‌بندی وجود ندارد، مستقیماً حذف شود
+            if (confirm('آیا مطمئن هستید که می‌خواهید این پست را حذف کنید؟')) {
+                const deleteResponse = await fetch(`/api/blog/${postSlug}/`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRFToken': csrftoken, // اضافه کردن توکن CSRF
+                    },
+                });
+
+                if (deleteResponse.ok) {
+                    alert('پست با موفقیت حذف شد!');
+                    window.location.reload();  // رفرش صفحه پس از حذف
+                } else {
+                    alert('خطا در حذف پست!');
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('خطا در دریافت اطلاعات پست!');
+    }
+}
+
+
+
+function deleteComment(postSlug, commentId) {
+    if (confirm('آیا مطمئن هستید که می‌خواهید این کامنت را حذف کنید؟')) {
         $.ajax({
-            url: `/api/blog/${postId}/`,
+            url: `/api/blog/${postSlug}/admin-comments/${commentId}/`,
             method: 'DELETE',
             headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRFToken': csrftoken
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')  // برای Django CSRF Token
             },
-            success: function (result) {
-                console.log("پست با موفقیت حذف شد:", result);
-                loadPosts(); // بازخوانی لیست پست‌ها پس از حذف
+            success: function (response) {
+                console.log("کامنت با موفقیت حذف شد:", response);
+
+                // حذف کامنت از صفحه بدون بارگذاری مجدد کل لیست
+                $(`#comment-${commentId}`).remove();  // حذف کامنت با استفاده از ID
+
+                // نمایش پیام موفقیت
+                showAlert('کامنت با موفقیت حذف شد.', 'success');
             },
             error: function (xhr, status, error) {
                 console.log("Error status:", status);
                 console.log("Error details:", error);
                 console.log("Response text:", xhr.responseText);
+
+                // نمایش پیام خطا
+                showAlert('خطا در حذف کامنت.', 'danger');
             }
         });
     }
 }
 
+function removeCategoryFromPost(postSlug, categoryId) {
+    if (confirm('آیا مطمئن هستید که می‌خواهید این دسته‌بندی را از پست حذف کنید؟')) {
+        fetch(`/api/blog/${postSlug}/categories/${categoryId}/`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('دسته‌بندی با موفقیت حذف شد.');
+                loadPostCategoriesAndComments(postSlug);  // بازخوانی لیست دسته‌بندی‌ها پس از حذف
+            } else {
+                alert('مشکلی در حذف دسته‌بندی به وجود آمد.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('خطا در ارتباط با سرور.');
+        });
+    }
+}
 
-function viewPost(postId) {
+async function loadPostCategoriesAndComments(postSlug) {
+    try {
+        // دریافت دسته‌بندی‌ها و نظرات به صورت موازی
+        const [categories, comments] = await Promise.all([
+            fetchData(`/api/blog/${postSlug}/categories/`, 'دسته‌بندی‌ها'),
+            fetchData(`/api/blog/${postSlug}/admin-comments/`, 'نظرات')
+        ]);
+
+        // ایجاد HTML برای دسته‌بندی‌ها و نظرات
+        const categoriesHTML = generateCategoriesHTML(categories, postSlug);
+        const commentsHTML = generateCommentsHTML(comments, postSlug);
+
+        // ترکیب و نمایش نتایج
+        const combinedHTML = `
+            <div class="post-details-panel">
+                <h6 class="panel-title"> جزئیات پست: </h6>
+                ${categoriesHTML}
+                ${commentsHTML}
+                <button class="btn btn-secondary" style="width: 100%;" onclick="loadPosts()">بازگشت</button>
+            </div>
+        `;
+
+        document.getElementById('panel-content').innerHTML = combinedHTML;
+    } catch (error) {
+        console.error('Error:', error);
+        alert('خطا در دریافت اطلاعات.');
+    }
+}
+
+// تابع کمکی برای دریافت داده‌ها
+async function fetchData(url, resourceName) {
+    const response = await fetch(url);
+    if (!response.ok) {
+        throw new Error(`خطا در دریافت ${resourceName}.`);
+    }
+    return response.json();
+}
+
+// تابع کمکی برای ایجاد HTML دسته‌بندی‌ها
+function generateCategoriesHTML(categories, postSlug) {
+    if (categories.length === 0) {
+        return '<div class="section"><h4>دسته‌بندی‌ها:</h4><p class="no-data">هیچ دسته‌بندی‌ای وجود ندارد.</p></div>';
+    }
+
+    const categoriesList = categories.map(category => `
+        <li class="category-item">
+            <span class="category-title">${category.title}</span>
+            <button class="btn-remove" onclick="removeCategoryFromPost('${postSlug}', ${category.id})">حذف دسته‌بندی</button>
+        </li>
+    `).join('');
+
+    return `
+        <div class="section">
+            <h4>دسته‌بندی‌ها:</h4>
+            <ul class="category-list">${categoriesList}</ul>
+        </div>
+    `;
+}
+
+// تابع کمکی برای ایجاد HTML نظرات
+function generateCommentsHTML(comments, postSlug) {
+    if (comments.length === 0) {
+        return '<div class="section"><h4>نظرات:</h4><p class="no-data">هیچ نظری وجود ندارد.</p></div>';
+    }
+
+    const commentsList = comments.map(comment => `
+        <li id="comment-${comment.id}" class="comment-item">  <!-- اضافه کردن id برای هر کامنت -->
+            <p class="comment-body">${comment.body}</p>
+            <p class="comment-status">وضعیت: ${comment.status}</p>  <!-- نمایش وضعیت کامنت -->
+            <button class="btn-remove" onclick="deleteComment('${postSlug}', ${comment.id})">حذف نظر</button>
+        </li>
+    `).join('');
+
+    return `
+        <div class="section">
+            <h4>نظرات:</h4>
+            <ul class="comment-list">${commentsList}</ul>
+        </div>
+    `;
+}
+function closeConfirmationPanel() {
+    document.getElementById('panel-content').innerHTML = '';
+}
+
+// تابع برای دریافت توکن CSRF
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // بررسی می‌کند که این کوکی، همان کوکی مورد نظر ما است.
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+
+function viewPost(postSlug) {
     $.ajax({
-        url: `/api/blog/${postId}/`,
+        url: `/api/blog/${postSlug}/`,
         method: 'GET',
         headers: {
             'X-Requested-With': 'XMLHttpRequest'
         },
         success: function (post) {
             let viewPostHTML = `
-                <button type="button" class=" btn-primary" onclick="loadPosts()">بازگشت</button>
-        <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title text-center mt--4">عنوان پست: ${post.title}</h3>
-                    </div>
-            <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title color--black" style="color: #006b1b">متن اصلی:</h4>
-                    </div>
-                        <div class="card-body">
-                            <p>${post.body}</p>
-                        </div>
-                    <div class="card-header">
-                        <h4 class="card-text mt--20" style="color: #006b1b" >توضیحات کوتاه:</h4>
+                <div class="card shadow-lg">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="card-title text-center mb-0">${post.title}</h3>
                     </div>
                     <div class="card-body">
-                        <p>${post.short_body}</p>
+                        <div class="mb-4">
+                            <h4 class="card-subtitle text-right text-muted mb-3">توضیحات اصلی (محتوا):</h4>
+                            <div class="card-text p-3 bg-light rounded">
+                                <p class="mb-0">${post.body}</p>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <h4 class="card-subtitle text-right text-muted mb-3">توضیحات کوتاه (جهت نمایش):</h4>
+                            <div class="card-text p-3 bg-light rounded">
+                                <p class="mb-0">${post.short_body}</p>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <h4 class="card-subtitle text-right text-muted mb-3">نویسنده این پست:</h4>
+                            <div class="card-text p-3 bg-light rounded">
+                                <p class="mb-0">${post.author_name}</p>
+                            </div>
+                        </div>
                     </div>
-            </div>
-                    <div class="col-md-6 mt--10 mb--10 mr--5 ">
-                        <button type="button" class="btn" onclick="loadPosts()">بازگشت</button>
-                        <button type="button" class="btn" onclick="editPost(${post.id})">ویرایش</button>
+                    <div class="card-footer bg-light">
+                        <div class="d-flex justify-content-between">
+                            <button type="button" class="btn btn-success" onclick="loadPosts()">
+                                <i class="fas fa-arrow-left"></i> بازگشت
+                            </button>
+                            <button class="btn btn-sm btn-warning" onclick="editPost('${post.slug}')">ویرایش</button> <!-- استفاده از 'post.slug' با گیومه -->
+                            <button type="button" class="btn btn-info pl-3 pr-3" onclick="loadPostCategoriesAndComments('${post.slug}')">
+                                <i class="fas fa-tags"></i>  مشاهده دسته‌بندی‌ها و نظرات این پست
+                            </button>
+                        </div>
                     </div>
-        </div>
+                </div>
             `;
             $('#panel-content').html(viewPostHTML);
-
-            convertToPersianNumbers();
         },
         error: function (xhr, status, error) {
             console.log("Error status:", status);
@@ -579,7 +817,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // تعریف رویداد کلیک برای دکمه داشبورد
     document.querySelectorAll('.nav-link').forEach(function (element) {
         element.addEventListener('click', function (event) {
-            event.preventDefault();
+            // event.preventDefault();
         });
     });
 });
@@ -663,7 +901,7 @@ $(document).ready(function () {
 
     // ارسال اطلاعات فرم ویرایش از طریق AJAX
     $('#profile-form').submit(function (event) {
-        event.preventDefault();
+        // event.preventDefault();
         $.ajax({
             url: '/panels/api/edit_admin_profile/',
             type: 'POST',
@@ -726,35 +964,10 @@ function loadCategories() {
     });
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+function showAlert(message, type = 'success') {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type}`;
+    alertDiv.textContent = message;
+    document.getElementById('panel-content').prepend(alertDiv);
+    setTimeout(() => alertDiv.remove(), 3000); // حذف پیام پس از 3 ثانیه
+}

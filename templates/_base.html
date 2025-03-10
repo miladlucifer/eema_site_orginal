@@ -4,198 +4,25 @@
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-
-
+    
+    
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>{% block page_title %}{% endblock page_title %}</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Favicons -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="shortcut icon" href="#" type="image/x-icon">
-    <link rel="apple-touch-icon" href="#">
-
-    <!-- ************************* CSS Files ************************* -->
-    <link rel="stylesheet" href="{% static 'css/_base.css' %}">
-
-    <!-- Vendor CSS -->
-    <link rel="stylesheet" href="{% static 'css/vendor.css' %}">
-
-    <!-- style css -->
-    <link rel="stylesheet" href="{% static 'css/main.css' %}">
-
+    
+    {% include 'links_and_script.html' %}
 
     {% block extra_css %}{% endblock extra_css %}
 </head>
 
 <body dir='rtl'>
-<!-- Preloader Start -->
-<div class="eema-preloader active">
-    <div class="eema-preloader-inner h-100 d-flex align-items-center justify-content-center">
-        <div class="eema-child eema-bounce1"></div>
-        <div class="eema-child eema-bounce2"></div>
-        <div class="eema-child zuka-bounce3"></div>
-    </div>
-</div>
-<!-- Preloader End -->
 
 <!-- Main Wrapper Start -->
 <div class="wrapper">
-    <!-- Header Start -->
-    <header class="header">
-        <div class="header-inner fixed-header" style="background: #f7f7f7">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-xl-9 col-lg-8 col-5 col-xs-0 col-none col-sm-block p-0">
-                        <nav class="main-navigation">
-                            {% if user.is_authenticated and not user.is_staff and not is_admin_user %}
-                                <div class="welcome-box" style="display: inline-block;">
-                                    خوش آمدید, <span class="user-name_last-name">{{ user.first_name }}</span>!
-                                </div>
-                            {% endif %}
-                            {% if user.is_authenticated %}
-                                {% if not user.is_superuser %}
 
-                                    {% if user.is_staff or is_admin_user %}
-                                        <div class="welcome-box-admin desktop-view"> خوش آمدید مدیر سایت: <a
-                                                href="{% url 'admin-panel' %}"
-                                                style="color:#7a1200; font-size: 10px;"><span
-                                                class="user-name_last-name">{{ request.user.first_name }} {{ request.user.last_name }}</span></a>
-                                            !
-                                        </div>
-                                        <div class="welcome-box-admin mobile-view"> خوش آمدید مدیر سایت: <a
-                                                href="{% url 'admin-panel' %}"
-                                                style="color:#7a1200; font-size: 10px;"><span
-                                                class="user-name_last-name">{{ request.user.first_name }}</span></a> !
-                                        </div> {% endif %}
-                                {% endif %}
-                            {% endif %}
-
-                            {% if user.is_superuser %}
-                                <div class="welcome-box-admin desktop-view"> خوش آمدید مدیریت کل: <a
-                                        href="{% url 'admin-panel' %}" style="color:#7a1200; font-size: 10px;"><span
-                                        class="user-name_last-name">{{ request.user.first_name }} {{ request.user.last_name }}</span></a>
-                                    !
-                                </div>
-                                <div class="welcome-box-admin mobile-view"> خوش آمدید مدیریت کل: <a
-                                        href="{% url 'admin-panel' %}" style="color:#7a1200; font-size: 10px;"><span
-                                        class="user-name_last-name">{{ request.user.first_name }}</span></a> !
-                                </div>
-                            {% endif %}
-
-                            <div class="site-branding" style="margin-right: 30px;">
-                                <a href="{% url 'home' %}" class="logo">
-                                    <figure class="logo--normal d-none d-sm-block">
-                                        <img class="px-5" src="{% static 'img/logo.png' %}"
-                                             style="max-height: 50px; margin-bottom: -15px;" alt="Logo">
-                                    </figure>
-
-                                </a>
-                            </div>
-                            <div class="mainmenu-nav d-none d-lg-block w-100 pr-3">
-                                <ul class="mainmenu d-lg-flex jusity-content-end jusity-content-lg-start pt-4">
-                                    <li class="mainmenu__item menu-item-has-children active">
-                                        <a href="{% url 'home' %}" class="mainmenu__link">
-                                            <span class="mm-text">{% translate 'home' %}</span>
-                                        </a>
-                                    </li>
-                                    <li class="mainmenu__item menu-item-has-children">
-                                        <a href="{% url 'blog_page' %}" class="mainmenu__link">
-                                            <span class="mm-text">وبلاگ</span>
-                                        </a>
-                                    </li>
-                                    <li class="mainmenu__item menu-item-has-children">
-                                        <a href="{% url 'product-list' %}" class="mainmenu__link">
-                                            <span class="mm-text">محصولات ما</span>
-                                        </a>
-                                    </li>
-                                    <li class="mainmenu__item">
-                                        <a href="#" class="mainmenu__link">
-                                            <span class="mm-text">درباره ما</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </nav>
-                    </div>
-                    {% if not user.is_authenticated %}
-
-                        <div class="header-container ">
-                        <div class="container">
-                            <div class="login-signup-box">
-                                <a class="text-right" style="font-size: 12px;"
-                                   href="{% url 'login_signup' %}">{% translate 'login | signup' %}</a>
-                            </div>
-                        </div>
-                    {% endif %}
-
-                    <div class="col-xl-3 col-lg-4 col-sm-7 col-12 p-0">
-                        <ul class="header-toolbar">
-                            {#                            <li class="header-toolbar__item">#}
-                            {#                                <a href="wishlist.html" class="header-toolbar__btn mx-4">#}
-                            {#                                    <i class="flaticon flaticon-like"></i>#}
-                            {#                                </a>#}
-                            {#                            </li>#}
-                            {#                            <li class="header-toolbar__item mini-cart-item">#}
-                            {#                                <a href="#miniCart" class="header-toolbar__btn toolbar-btn mini-cart-btn">#}
-                            {#                                    <i class="flaticon flaticon-shopping-cart"></i>#}
-                            {#                                    <sup class="mini-cart-count"></sup>#}
-                            {#                                </a>#}
-                            {#                            </li>#}
-                            {% if user.is_authenticated %}
-                                <li class="header-toolbar__item user-info">
-                                <a href="{% url 'admin-panel' %}" class="header-toolbar__btn">
-                                    <i class="flaticon flaticon-user"></i>
-                                </a>
-                                <ul class="user-info-menu">
-
-                                <li>
-                                    <a class="text-right" onclick="confirmLogout(event)"
-                                       href="{% url 'custom_logout' %}">{% translate 'logout' %}</a>
-                                </li>
-                                {% if not user.is_staff and not is_admin_user %}
-
-                                    <li>
-                                        <a class="text-right"
-                                           href="{% url 'user-panel' %}">{% translate 'profile' %}</a>
-                                    </li>
-                                {% endif %}
-                                {% if user.is_staff or is_admin_user %}
-                                    <li>
-                                        <a class="text-right"
-                                           href="{% url 'admin-panel' %}">{% translate 'profile admin' %}</a>
-                                    </li>
-                                {% endif %}
-                            {% endif %}
-                            </ul>
-
-                            </li>
-                        </ul>
-
-                    </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="mobile-menu"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- Header End -->
-
-    <script> function confirmLogout(event) {
-        event.preventDefault();
-        const userConfirmed = confirm("آیا از خروج اطمینان دارید؟");
-        if (userConfirmed) {
-            window.location.href = event.target.href;
-        }
-    }
-    </script>
+    {% include 'header.html' %}
 
     {% if messages %}
         <div class="container">
@@ -205,44 +32,18 @@
 
         </div>
     {% endif %}
+    
+    {% block content %}{% endblock content %}
 
-    {% block content %}
-
-
-
-    {% endblock content %}
-
-    <!-- Search form Popup Start -->
-    <div class="searchform__popup" id="searchForm">
-        <a href="#" class="btn-close"><i class="flaticon flaticon-cross"></i></a>
-        <div class="searchform__body">
-            <p>در باکس زیر عبارت خود را وارد کنید</p>
-            <form class="searchform">
-                <input type="text" name="popup-search" id="popup-search" class="searchform__input"
-                       placeholder="جستجو در بین محصولات...">
-                <button type="submit" class="searchform__submit"><i class="flaticon flaticon-magnifying-glass-icon"></i>
-                </button>
-            </form>
-        </div>
-    </div>
-    <!-- Search form Popup End -->
 
     {% include 'footer.html' %}
+    {% include 'course_registration.html' %}
 
 </div>
 <!-- Main Wrapper End -->
 </body>
 
-<!-- ************************* JS Files ************************* -->
-
-<!-- jQuery JS -->
-<script src="{% static 'js/vendor.js' %}"></script>
-
-<!-- Main JS -->
-<script src="{% static 'js/convertToPersianNumbers.js' %}"></script>
-<script src="{% static 'js/main.js' %}"></script>
-<script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="{% static 'blog/js/comments.js' %}"></script>
 
 </html>
+
+    

@@ -1,0 +1,48 @@
+{% extends '_base.html' %}
+{% load custom_tags %} <!-- لود تگ تمپلیت سفارشی -->
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title">سفارشات من</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>شماره سفارش</th>
+                                <th>محصول</th>
+                                <th>تعداد</th>
+                                <th>قیمت کل</th>
+                                <th>وضعیت</th>
+                                <th>تاریخ سفارش</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td>{{ order.id }}</td>
+                                <td>
+                                    <ul>
+                                    {% for item in order.items.all %}
+                                        <li>{{ item.product.name }} - {{ item.quantity }}</li>
+                                    {% endfor %}
+                                    </ul>
+                                </td>
+                                <td>{{ order.items.count }}</td>
+                                <td>{{ order|total_price }}</td> <!-- استفاده از تگ تمپلیت سفارشی برای جمع قیمت‌ها -->
+                                <td>{{ order.get_status_display }}</td>
+                                <td>{{ order.date_created|date:"Y/m/d" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <a href="{% url 'user-panel' %}" class="btn btn-secondary mt-3">بازگشت</a>
+        </div>
+    </div>
+</div>
+{% endblock content %}

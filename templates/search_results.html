@@ -1,0 +1,128 @@
+{% extends '_base.html' %}
+{% block content %}
+
+    <style>
+
+        /* کارت‌ها */
+        .card {
+            border: none;
+            border-radius: 10px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-img-top {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .card-text {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        /* انیمیشن‌ها */
+        .animate__animated {
+            animation-duration: 0.5s;
+        }
+
+        /* متن‌های مرکز‌چین */
+        .text-center {
+            text-align: center;
+        }
+
+        /* فاصله‌ها */
+        .mb-3 {
+            margin-bottom: 1rem;
+        }
+
+        .mb-4 {
+            margin-bottom: 1.5rem;
+        }
+
+        .my-5 {
+            margin-top: 3rem;
+            margin-bottom: 3rem;
+        }
+    </style>
+
+    <div class="container my-5">
+        <h1 class="text-center mb-4">نتایج جستجو برای: "{{ query }}"</h1>
+
+        <!-- نتایج محصولات -->
+        {% if product_results %}
+            <h2 class="mb-3">محصولات</h2>
+            <div class="row">
+                {% for product in product_results %}
+                    <div class="col-md-12 mb-4">
+                        <div class="card h-100 shadow-sm animate__animated animate__fadeIn">
+                            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ product.name }}</h5>
+                                <p class="card-text">{{ product.description|truncatewords:20 }}</p>
+                                <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">مشاهده
+                                    جزئیات</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- نتایج وبلاگ‌ها -->
+        {% if blog_results %}
+            <h2 class="mb-3">وبلاگ‌ها</h2>
+            <div class="row">
+                {% for blog in blog_results %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm animate__animated animate__fadeIn">
+                            <img src="{{ blog.image.url }}" class="card-img-top" alt="{{ blog.title }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ blog.title }}</h5>
+                                <p class="card-text">{{ blog.body|truncatewords:20 }}</p>
+                                <a href="{% url 'blog_detail' blog.slug %}" class="btn btn-primary">مشاهده مقاله</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- اگر هیچ نتیجه‌ای وجود نداشت -->
+        {% if not product_results and not blog_results %}
+            <div class="text-center my-5">
+                <h2 class="text-muted">نتیجه‌ای برای "{{ query }}" یافت نشد.</h2>
+                <p class="text-muted">لطفاً عبارت جستجو را تغییر دهید.</p>
+            </div>
+        {% endif %}
+    </div>
+{% endblock content %}

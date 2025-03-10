@@ -1,5 +1,5 @@
 from django import forms
-from .models import BlogPost , Category
+from .models import BlogPost , Category, Course ,CourseRegistration
 
 class BlogPostForm(forms.ModelForm):
     class Meta:
@@ -11,3 +11,13 @@ class BlogPostForm(forms.ModelForm):
         queryset=Category.objects.all(),
         widget=forms.CheckboxSelectMultiple
     )
+
+
+
+from django import forms
+from .models import CourseRegistration  # مدل ثبت نام
+
+class CourseRegistrationForm(forms.ModelForm):
+    class Meta:
+        model = CourseRegistration
+        fields = ['name', 'email', 'phone', 'course']
